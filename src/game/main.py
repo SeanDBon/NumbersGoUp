@@ -14,6 +14,10 @@ pygame.mixer.music.load('resources/music/Background.mp3')
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(.009)
 
+# Background Image
+pygame.image.load('resources/images/mountains.png')
+background = pygame.image.load('resources/images/mountains.png')
+
 
 class LeafGame:
     """Overall class to manage game assets and behavior."""
@@ -82,7 +86,8 @@ class LeafGame:
         return 0 < weapon.position[1] < self.settings.screen_height - 64
 
     def _update_screen(self):
-        self.screen.fill(self.settings.bg_color)
+        self.screen.fill((0, 0, 0))
+        self.screen.blit(background, (0, 0))
         if len(self.weapons_to_render) < 250:
             self.weapons_to_render += \
                 WeaponsLayer(self.weapon_level, self.num_weapons - len(self.weapons_to_render)).draw_weapons_layer()
