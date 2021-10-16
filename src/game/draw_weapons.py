@@ -6,7 +6,7 @@ from settings import Settings
 
 class Weapon:
 
-	def __init__(self, position=(0, 0), rotation=0):
+	def __init__(self, position=(0, 0)):
 		self.image = None
 		self.name = ''
 
@@ -15,7 +15,6 @@ class Weapon:
 		self.position = position
 		self.rotation = randint(-360, 360)
 
-		self.start_position = position
 		velocity_max = 10
 		velocity_min = -10
 		self.vector_x = uniform(velocity_min, velocity_max)
@@ -55,5 +54,5 @@ class WeaponsLayer:
 		dim_y = 32
 		color_key = (0, 0, 0)
 
-		weapon_image = self.sprite_sheet.get_image(image_loc, self.level, dim_x, dim_y, scale, rotation, color_key)
+		weapon_image = self.sprite_sheet.get_image(image_loc, self.level, dim_x, dim_y, scale, color_key, rotation)
 		return weapon_image
