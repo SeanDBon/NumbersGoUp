@@ -14,9 +14,7 @@ pygame.mixer.music.load('resources/music/Background.mp3')
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(.009)
 
-# Background Image
-pygame.image.load('resources/images/mountains.png')
-background = pygame.image.load('resources/images/mountains.png')
+# Sound Effects
 
 
 class LeafGame:
@@ -29,18 +27,33 @@ class LeafGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Numbers Go Up")
 
-        self.num_weapons = 300
+        self.num_weapons = 500
         self.weapon_level = 0
 
         # Create initial weapons layer (weapon level, weapon amount)
         self.weapons_to_render = WeaponsLayer(self.weapon_level, self.num_weapons).draw_weapons_layer()
 
         self.total_points = 0
-        self.next_level = 1000
+        self.next_level = 100
         self.claimed_weapons = {}
+
+        self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25]
 
         pygame.font.init()
         self.my_font = pygame.font.SysFont('Futura', 50)
+
+    # Backgrounds #
+        background1 = pygame.image.load('resources/images/mountains.png')
+        #background2 = pygame.image.load('resources/images/ocean.jpg')
+        self.backgrounds = []
+        self.backgrounds.append(background1)
+        #self.backgrounds.append(background2)
+        for i in range(11):
+            self.backgrounds.append(background1)
+
+    # Sound Effects #
+        self.pickup_sound = mixer.Sound('resources/sounds/pickup.mp3')
+        self.pickup_sound.set_volume(.05)
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -48,7 +61,7 @@ class LeafGame:
 
         while True:
             self.point_text = self.my_font.render("Points: " + str(self.total_points), False, (255, 255, 255))
-            self.level_text = self.my_font.render("Level: " + str(self.weapon_level), False, (255, 255, 255))
+            self.level_text = self.my_font.render("Level: " + str(self.weapon_level + 1), False, (255, 255, 255))
             clock.tick(self.settings.FPS)
             self._check_events()
             self._update_screen()
@@ -71,7 +84,8 @@ class LeafGame:
                     y = weapon.position[1] + 16
                     weapon_rect.center = (x, y)
                     if weapon_rect.collidepoint(pygame.mouse.get_pos()):
-                        self.total_points += (weapon.level + 1) * 10
+                        self.pickup_sound.play()
+                        self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
                         claimed_weapon = self.weapons_to_render.pop(i)
                         print(self.claimed_weapons)
                         if claimed_weapon.name not in self.claimed_weapons.keys():
@@ -87,8 +101,8 @@ class LeafGame:
 
     def _update_screen(self):
         self.screen.fill((0, 0, 0))
-        self.screen.blit(background, (0, 0))
-        if len(self.weapons_to_render) < 250:
+        self.screen.blit(self.backgrounds[self.weapon_level], (0, 0))
+        if len(self.weapons_to_render) < (self.num_weapons * .8):
             self.weapons_to_render += \
                 WeaponsLayer(self.weapon_level, self.num_weapons - len(self.weapons_to_render)).draw_weapons_layer()
 
