@@ -46,7 +46,7 @@ class KnightLayer:
 
 	def construct_knight_sprite(self, frame, direction):
 		scale = 1
-		dim_x = 76
+		dim_x = 75.8
 		dim_y = 108
 		color_key = (0, 0, 0)
 
