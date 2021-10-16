@@ -3,5 +3,5 @@ class Settings:
 	screen_width = 1600
 	ACC = 0.5
 	FRIC = -0.12
-	FPS = 60
+	FPS = 120
 	bg_color = (50, 50, 50)
