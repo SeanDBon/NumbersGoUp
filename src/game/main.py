@@ -5,6 +5,14 @@ from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
 from .draw_knights import KnightLayer
+from pygame import mixer
+import pygame.mixer
+
+# Background Sound
+pygame.mixer.init()
+pygame.mixer.music.load('resources/music/Background.mp3')
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(.009)
 
 
 class LeafGame:
