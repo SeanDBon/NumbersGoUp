@@ -1,6 +1,6 @@
 class Settings:
-	screen_height = 900
-	screen_width = 1600
+	screen_height = 1080
+	screen_width = 1920
 	ACC = 0.5
 	FRIC = -0.12
 	FPS = 369
