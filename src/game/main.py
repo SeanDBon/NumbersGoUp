@@ -6,6 +6,7 @@ from settings import Settings
 from .draw_weapons import WeaponsLayer
 from .draw_knights import KnightLayer
 
+
 class LeafGame:
     """Overall class to manage game assets and behavior."""
 
