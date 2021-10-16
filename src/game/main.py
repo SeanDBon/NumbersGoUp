@@ -37,7 +37,7 @@ class LeafGame:
         self.next_level = 100
         self.claimed_weapons = {}
 
-        self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25]
+        self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25, 527343.75, 9228515.625]
 
         pygame.font.init()
         self.my_font = pygame.font.SysFont('Futura', 50)
