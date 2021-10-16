@@ -1,7 +1,7 @@
 import sys
 
 import pygame
-
+from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
 
@@ -24,17 +24,18 @@ class LeafGame:
 
         self.total_points = 0
         self.next_level = 1000
+        self.claimed_weapons = {}
 
         pygame.font.init()
-        self.my_font = pygame.font.SysFont('Comic Sans MS', 30)
-        self.text_surface = self.my_font.render(str(self.total_points), False, (100, 0, 0))
+        self.my_font = pygame.font.SysFont('Futura', 50)
 
     def run_game(self):
         """Start the main loop for the game."""
         clock = pygame.time.Clock()
 
         while True:
-            self.text_surface = self.my_font.render(str(self.total_points), False, (100, 0, 0))
+            self.point_text = self.my_font.render("Points: " + str(self.total_points), False, (255, 255, 255))
+            self.level_text = self.my_font.render("Level: " + str(self.weapon_level), False, (255, 255, 255))
             clock.tick(self.settings.FPS)
             self._check_events()
             self._update_screen()
@@ -48,13 +49,6 @@ class LeafGame:
                 if event.key == pygame.K_q:
                     sys.exit()
 
-    @staticmethod
-    def can_move(weapon, max_dist):
-        return (abs(weapon.start_position[0] - weapon.position[0]) < max_dist) and (
-                abs(weapon.start_position[0] + weapon.position[0]) > max_dist) and \
-                (abs(weapon.start_position[1] - weapon.position[1]) < max_dist) and (
-                abs(weapon.start_position[1] + weapon.position[1]) > max_dist)
-
     def mouse_collision(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEMOTION:
@@ -65,8 +59,18 @@ class LeafGame:
                     weapon_rect.center = (x, y)
                     if weapon_rect.collidepoint(pygame.mouse.get_pos()):
                         self.total_points += (weapon.level + 1) * 10
-                        self.weapons_to_render.pop(i)
-                        print(self.total_points)
+                        claimed_weapon = self.weapons_to_render.pop(i)
+                        print(self.claimed_weapons)
+                        if claimed_weapon.name not in self.claimed_weapons.keys():
+                            self.claimed_weapons[claimed_weapon.name] = 0
+                        else:
+                            self.claimed_weapons[claimed_weapon.name] += 1
+
+    def bind_to_screen_x(self, weapon):
+        return 0 < weapon.position[0] < self.settings.screen_width - 64
+
+    def bind_to_screen_y(self, weapon):
+        return 0 < weapon.position[1] < self.settings.screen_height - 64
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
@@ -79,13 +83,34 @@ class LeafGame:
             self.next_level = self.next_level * 10
 
         for weapon in self.weapons_to_render:
-            if self.can_move(weapon, 300):
-                x = weapon.position[0] + weapon.vector_x
-                y = weapon.position[1] + weapon.vector_y
-                weapon.position = (x, y)
+
+            if self.bind_to_screen_x(weapon):
+                vector_x_velocity = weapon.vector_x
+                if vector_x_velocity > 0:
+                    vector_x_velocity -= .1
+                elif vector_x_velocity < 0:
+                    vector_x_velocity += .1
+                weapon.vector_x = vector_x_velocity
+            else:
+                weapon.vector_x = weapon.vector_x * -1.2
+
+            if self.bind_to_screen_y(weapon):
+                vector_y_velocity = weapon.vector_y
+                if vector_y_velocity > 0:
+                    vector_y_velocity -= .1
+                elif vector_y_velocity < 0:
+                    vector_y_velocity += .1
+                weapon.vector_y = vector_y_velocity
+            else:
+                weapon.vector_y = weapon.vector_y * -1.2
+
+            x = weapon.position[0] + weapon.vector_x
+            y = weapon.position[1] + weapon.vector_y
+            weapon.position = (x, y)
 
             self.screen.blit(weapon.image, weapon.position)
             self.mouse_collision()
-            self.screen.blit(self.text_surface, (0, 0))
+            self.screen.blit(self.point_text, (0, 0))
+            self.screen.blit(self.level_text, (720, 0))
 
         pygame.display.update()
