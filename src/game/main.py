@@ -8,14 +8,11 @@ from .draw_knights import KnightLayer
 from pygame import mixer
 import pygame.mixer
 
-# Background Sound
+"""Background Music"""
 pygame.mixer.init()
 pygame.mixer.music.load('resources/music/Background.mp3')
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(.009)
-
-# Sound Effects
-
 
 class LeafGame:
     """Overall class to manage game assets and behavior."""
@@ -24,7 +21,7 @@ class LeafGame:
         """Initialize the game, and create resources."""
         pygame.init()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height), pygame.RESIZABLE)
         pygame.display.set_caption("Numbers Go Up")
 
         self.num_weapons = 500
@@ -44,10 +41,10 @@ class LeafGame:
 
         """Background Images"""
         background1 = pygame.image.load('resources/images/mountains.png')
-        #background2 = pygame.image.load('resources/images/ocean.jpg')
+        # background2 = pygame.image.load('resources/images/ocean.jpg')
         self.backgrounds = []
         self.backgrounds.append(background1)
-        #self.backgrounds.append(background2)
+        # self.backgrounds.append(background2)
         for i in range(11):
             self.backgrounds.append(background1)
 
@@ -66,11 +63,13 @@ class LeafGame:
             self._check_events()
             self._update_screen()
 
-    @staticmethod
-    def _check_events():
+    def _check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.VIDEORESIZE:
+                # There's some code to add back window content here.
+                    self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
