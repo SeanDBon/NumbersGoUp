@@ -42,7 +42,7 @@ class LeafGame:
         pygame.font.init()
         self.my_font = pygame.font.SysFont('Futura', 50)
 
-    # Backgrounds #
+        """Background Images"""
         background1 = pygame.image.load('resources/images/mountains.png')
         #background2 = pygame.image.load('resources/images/ocean.jpg')
         self.backgrounds = []
@@ -51,7 +51,7 @@ class LeafGame:
         for i in range(11):
             self.backgrounds.append(background1)
 
-    # Sound Effects #
+        """Sound Effects"""
         self.pickup_sound = mixer.Sound('resources/sounds/pickup.mp3')
         self.pickup_sound.set_volume(.05)
 
