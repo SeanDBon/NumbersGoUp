@@ -1,6 +1,7 @@
 import pygame
 import pygame.mixer
 from pygame import mixer
+import sys
 
 class Menu:
     def __init__(self, game):
@@ -83,6 +84,7 @@ class StartScreen(Menu):
                 self.game.curr_menu = self.game.credits
             elif self.state == 'Quit to Desktop':
                 pygame.quit()
+                sys.exit()
             self.run_display = False
 
 
