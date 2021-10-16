@@ -4,7 +4,7 @@ import pygame
 from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
-
+from .draw_knights import KnightLayer
 
 class LeafGame:
     """Overall class to manage game assets and behavior."""
@@ -79,7 +79,8 @@ class LeafGame:
                 WeaponsLayer(self.weapon_level, self.num_weapons - len(self.weapons_to_render)).draw_weapons_layer()
 
         if self.total_points > self.next_level:
-            self.weapon_level += 1
+            if self.weapon_level < 11:
+                self.weapon_level += 1
             self.next_level = self.next_level * 10
 
         for weapon in self.weapons_to_render:
@@ -109,8 +110,30 @@ class LeafGame:
             weapon.position = (x, y)
 
             self.screen.blit(weapon.image, weapon.position)
-            self.mouse_collision()
-            self.screen.blit(self.point_text, (0, 0))
-            self.screen.blit(self.level_text, (720, 0))
+        self.mouse_collision()
+
+        self.screen.blit(self.point_text, (0, 0))
+        self.screen.blit(self.level_text, (720, 0))
+
+        knight_to_render = KnightLayer(0).create_knight_animations()
+        """knight_to_render.sprites[direction][animation frame]"""
+        self.screen.blit(knight_to_render.sprites[0][0], (128, 260))
+        self.screen.blit(knight_to_render.sprites[0][1], (196, 260))
+        self.screen.blit(knight_to_render.sprites[0][2], (256, 260))
+
+        knight_to_render = KnightLayer(3).create_knight_animations()
+        self.screen.blit(knight_to_render.sprites[1][0], (128, 360))
+        self.screen.blit(knight_to_render.sprites[1][1], (196, 360))
+        self.screen.blit(knight_to_render.sprites[1][2], (256, 360))
+
+        knight_to_render = KnightLayer(6).create_knight_animations()
+        self.screen.blit(knight_to_render.sprites[2][0], (128, 460))
+        self.screen.blit(knight_to_render.sprites[2][1], (196, 460))
+        self.screen.blit(knight_to_render.sprites[2][2], (256, 460))
+
+        knight_to_render = KnightLayer(9).create_knight_animations()
+        self.screen.blit(knight_to_render.sprites[3][0], (128, 560))
+        self.screen.blit(knight_to_render.sprites[3][1], (196, 560))
+        self.screen.blit(knight_to_render.sprites[3][2], (256, 560))
 
         pygame.display.update()
