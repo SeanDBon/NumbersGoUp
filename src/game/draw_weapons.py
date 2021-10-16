@@ -5,23 +5,21 @@ from settings import Settings
 
 
 class Weapon:
-	"""Represents a chess piece."""
 
 	def __init__(self, position=(0, 0), rotation=0):
-		"""Initialize attributes to represent a ches piece."""
 		self.image = None
 		self.name = ''
 
 		self.level = None
 
-		# Start each piece off at the top left corner.
 		self.position = position
-		self.rotation = rotation
+		self.rotation = randint(-360, 360)
 
 		self.start_position = position
-
-		self.vector_x = uniform(-2, 2)
-		self.vector_y = uniform(-2, 2)
+		velocity_max = 10
+		velocity_min = -10
+		self.vector_x = uniform(velocity_min, velocity_max)
+		self.vector_y = uniform(velocity_min, velocity_max)
 
 
 class WeaponsLayer:
@@ -42,7 +40,7 @@ class WeaponsLayer:
 			for weapon_num in range(6):
 				clutter += 1
 				image_loc = weapon_num
-				weapon = Weapon((randint(0, Settings().screen_width), randint(0, Settings().screen_height)))
+				weapon = Weapon((randint(0, Settings().screen_width-128), randint(0, Settings().screen_height-128)))
 				weapon.image = self.construct_weapon_image(image_loc)
 				weapon.name = weapon_levels[self.level] + ' ' + weapon_types[weapon_num]
 				weapon.level = self.level
@@ -52,9 +50,10 @@ class WeaponsLayer:
 
 	def construct_weapon_image(self, image_loc):
 		scale = 2
+		rotation = randint(-360, 360)
 		dim_x = 32
 		dim_y = 32
 		color_key = (0, 0, 0)
 
-		weapon_image = self.sprite_sheet.get_image(image_loc, self.level, dim_x, dim_y, scale, color_key)
+		weapon_image = self.sprite_sheet.get_image(image_loc, self.level, dim_x, dim_y, scale, rotation, color_key)
 		return weapon_image
