@@ -30,7 +30,6 @@ class KnightLayer:
 		sprite_sheet_image = pygame.image.load('resources/assets/knights_sprite.png').convert_alpha()
 		self.sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
 		self.level = int(round((level-1) / 3)*3)
-		print(self.level)
 
 	def create_knight_animations(self):
 		knight = Knight((randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128)))
