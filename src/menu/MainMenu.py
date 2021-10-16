@@ -5,6 +5,7 @@ import pygame as pg
 from settings import Settings
 
 
+
 class MainMenu:
     def __init__(self):
         pygame.init()
@@ -44,10 +45,12 @@ class MainMenu:
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
 
+
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
     def draw_text(self, text, size, x, y):
+        pygame.font.init()
         font = pygame.font.Font("resources/fonts/SquidFont.ttf", 50)
         text_surface = font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect()
