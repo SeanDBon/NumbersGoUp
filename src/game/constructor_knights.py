@@ -5,7 +5,8 @@ from settings import Settings
 
 
 class Knight:
-	def __init__(self, position=(0, 0)):
+	def __init__(self, level, position=(100, 100)):
+		# Each knight can have 4 directions, 0 -3
 		self.sprites = {
 			0: [],
 			1: [],
@@ -13,42 +14,37 @@ class Knight:
 			3: []
 		}
 		self.name = ''
-
-		self.level = None
+		self.level = level
 
 		self.position = position
+		self.current_frame = 0
 		self.direction = 0
 
-		velocity_max = 4
-		velocity_min = -4
-		self.vector_x = uniform(velocity_min, velocity_max)
-		self.vector_y = uniform(velocity_min, velocity_max)
-
-
-class KnightLayer:
-	def __init__(self, level):
 		sprite_sheet_image = pygame.image.load('resources/assets/knights_sprite.png').convert_alpha()
 		self.sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
-		self.level = int(round((level-1) / 3)*3)
-		print(self.level)
+
+		self.create_knight_animations()
 
 	def create_knight_animations(self):
-		knight = Knight((randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128)))
-		knight.level = self.level
+		self.sprites = {
+			0: [],
+			1: [],
+			2: [],
+			3: []
+		}
 		for direction in range(4):
 			for frame in range(3):
-				knight.sprites[direction].append(self.construct_knight_sprite(frame+self.level, direction))
-		return knight
-# Lvl 0 frames 0-2
-# Lvl 1 frames 3-5
-# Lvl 2 frames 6-8
-# Lvl 3 frames 9-11
+				self.sprites[direction].append(self.construct_knight_sprite(frame+int(round((self.level - 1) / 3) * 3), direction))
 
 	def construct_knight_sprite(self, frame, direction):
 		scale = 1
 		dim_x = 75.8
-		dim_y = 108
+		dim_y = 103.5
 		color_key = (0, 0, 0)
 
 		knight_image = self.sprite_sheet.get_image(frame, direction, dim_x, dim_y, scale, color_key)
 		return knight_image
+
+	def get_sprite(self):
+		sprite = self.sprites[self.direction][self.current_frame]
+		return sprite
