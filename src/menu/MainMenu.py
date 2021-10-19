@@ -24,7 +24,7 @@ class MainMenu:
     def game_loop(self):
         while self.playing:
             self.check_events()
-            leaf_game = main.LeafGame()
+            leaf_game = main.NumbersGoUp()
             leaf_game.run_game()
 
             pg.quit()

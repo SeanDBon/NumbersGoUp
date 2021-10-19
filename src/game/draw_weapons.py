@@ -20,6 +20,13 @@ class Weapon:
 		self.vector_x = uniform(velocity_min, velocity_max)
 		self.vector_y = uniform(velocity_min, velocity_max)
 
+	def get_collision_rect(self):
+		weapon_rect = self.image.get_rect()
+		x = self.position[0] + 16
+		y = self.position[1] + 16
+		weapon_rect.center = (x, y)
+		return weapon_rect
+
 
 class WeaponsLayer:
 	def __init__(self, level, clutter_amount):
