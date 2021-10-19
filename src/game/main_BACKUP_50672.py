@@ -1,18 +1,22 @@
 import sys
 
 import pygame
-from pygame import mixer
 from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
+<<<<<<< HEAD
 from .animator_knights import AnimateKnights
+=======
+from .draw_knights import KnightLayer
+from pygame import mixer
+import pygame.mixer
 
 """Background Music"""
-mixer.init()
-mixer.music.load('resources/music/Background.mp3')
-mixer.music.play(-1)
-mixer.music.set_volume(.009)
-
+pygame.mixer.init()
+pygame.mixer.music.load('resources/music/Background.mp3')
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(.009)
+>>>>>>> master
 
 class LeafGame:
     """Overall class to manage game assets and behavior."""
@@ -24,11 +28,15 @@ class LeafGame:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height), pygame.RESIZABLE)
         pygame.display.set_caption("Numbers Go Up")
 
+<<<<<<< HEAD
         self.num_weapons = 300
         self.weapon_level = 1
 
         self.animation_dt = 0
-
+=======
+        self.num_weapons = 500
+        self.weapon_level = 0
+>>>>>>> master
 
         # Create initial weapons layer (weapon level, weapon amount)
         self.weapons_to_render = WeaponsLayer(self.weapon_level, self.num_weapons).draw_weapons_layer()

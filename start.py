@@ -2,11 +2,14 @@ import sys
 import pygame as pg
 
 from src.game import main
+from src.menu import MainMenu
 
 
 if __name__ == '__main__':
-    leaf_game = main.LeafGame()
-    leaf_game.run_game()
+    leaf_game = MainMenu.MainMenu()
+    while leaf_game.running:
+        leaf_game.curr_menu.display_menu()
+        leaf_game.game_loop()
 
     pg.quit()
     sys.exit()
