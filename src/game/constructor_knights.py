@@ -5,7 +5,7 @@ from settings import Settings
 
 
 class Knight:
-	def __init__(self, level, position=(100, 100)):
+	def __init__(self, level, direction=0, position=(100, 100)):
 		# Each knight can have 4 directions, 0 -3
 		self.sprites = {
 			0: [],
@@ -18,7 +18,7 @@ class Knight:
 
 		self.position = position
 		self.current_frame = 0
-		self.direction = 0
+		self.direction = direction
 
 		sprite_sheet_image = pygame.image.load('resources/assets/knights_sprite.png').convert_alpha()
 		self.sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
@@ -48,3 +48,10 @@ class Knight:
 	def get_sprite(self):
 		sprite = self.sprites[self.direction][self.current_frame]
 		return sprite
+
+	def get_collision_rect(self):
+		knight_rect = self.get_sprite().get_rect()
+		x = self.position[0] + 5
+		y = self.position[1]
+		knight_rect.center = (x, y)
+		return knight_rect

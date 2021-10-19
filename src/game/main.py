@@ -5,7 +5,7 @@ from pygame import mixer
 from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
-from .animator_knights import AnimateKnights
+from .animator_knights import AnimateKnight
 
 """Background Music"""
 mixer.init()
@@ -14,29 +14,33 @@ mixer.music.play(-1)
 mixer.music.set_volume(.009)
 
 
-class LeafGame:
+class NumbersGoUp:
     """Overall class to manage game assets and behavior."""
 
     def __init__(self):
         """Initialize the game, and create resources."""
         pygame.init()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Numbers Go Up")
 
         self.num_weapons = 300
         self.weapon_level = 1
 
-        self.animation_dt = 0
+        self.num_knights = 5
 
+        self.animation_dt = 0
 
         # Create initial weapons layer (weapon level, weapon amount)
         self.weapons_to_render = WeaponsLayer(self.weapon_level, self.num_weapons).draw_weapons_layer()
         # self.render_knights = AnimateKnights(self.screen, self.weapon_level, num_knights=5)
-        self.animated_knight = AnimateKnights(self.screen, self.weapon_level)
+
+        self.knights_to_render = []
+        for knight_count in range(self.num_knights):
+            self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
 
         self.total_points = 0
-        self.next_level = 100
+        self.next_level = 1000
         self.claimed_weapons = {}
 
         self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25, 527343.75, 9228515.625]
@@ -73,9 +77,9 @@ class LeafGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            elif event.type == pygame.VIDEORESIZE:
-                # There's some code to add back window content here.
-                    self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+            # elif event.type == pygame.VIDEORESIZE:
+            #     # There's some code to add back window content here.
+            #         self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
@@ -84,10 +88,7 @@ class LeafGame:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEMOTION:
                 for i, weapon in enumerate(self.weapons_to_render):
-                    weapon_rect = weapon.image.get_rect()
-                    x = weapon.position[0] + 16
-                    y = weapon.position[1] + 16
-                    weapon_rect.center = (x, y)
+                    weapon_rect = weapon.get_collision_rect()
                     if weapon_rect.collidepoint(pygame.mouse.get_pos()):
                         self.pickup_sound.play()
                         self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
@@ -97,6 +98,19 @@ class LeafGame:
                             self.claimed_weapons[claimed_weapon.name] = 0
                         else:
                             self.claimed_weapons[claimed_weapon.name] += 1
+
+    def knight_collision(self):
+        for knight in self.knights_to_render:
+            for i, weapon in enumerate(self.weapons_to_render):
+                weapon_rect = weapon.get_collision_rect()
+                if weapon_rect.colliderect(knight.knight.get_collision_rect()):
+                    self.pickup_sound.play()
+                    self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
+                    claimed_weapon = self.weapons_to_render.pop(i)
+                    if claimed_weapon.name not in self.claimed_weapons.keys():
+                        self.claimed_weapons[claimed_weapon.name] = 0
+                    else:
+                        self.claimed_weapons[claimed_weapon.name] += 1
 
     def bind_to_screen_x(self, weapon):
         return 0 < weapon.position[0] < self.settings.screen_width - 64
@@ -116,8 +130,8 @@ class LeafGame:
                 self.weapon_level += 1
             self.next_level = self.next_level * 10
 
-        self.animated_knight.level = self.weapon_level
-        self.animated_knight.update_animation_frame(self.animation_dt)
+        for knight in self.knights_to_render:
+            knight.update_animation_frame(self.animation_dt, self.weapon_level)
 
         for weapon in self.weapons_to_render:
 
@@ -146,15 +160,13 @@ class LeafGame:
             weapon.position = (x, y)
 
             self.screen.blit(weapon.image, weapon.position)
-        self.mouse_collision()
 
+        # Check collisions
+        self.mouse_collision()
+        self.knight_collision()
+
+        # Draw score boards
         self.screen.blit(self.point_text, (0, 0))
         self.screen.blit(self.level_text, (720, 0))
-
-        # self.update_animation_frame(self.animation_time)
-        # self.render_knights.render_knights(self.animation_dt)
-        # self.render_knights.update_animation_frame(self.animation_dt)
-
-
 
         pygame.display.update()

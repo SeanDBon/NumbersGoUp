@@ -1,10 +1,10 @@
 from .constructor_knights import Knight
 from settings import Settings
 
-import random
+from random import *
 
 
-class AnimateKnights:
+class AnimateKnight:
 	def __init__(self, screen, level):
 		# Set up animation variables
 		self.settings = Settings()
@@ -15,15 +15,16 @@ class AnimateKnights:
 		self.current_time = 0
 		self.animation_frames = 3
 		self.current_frame = 0
-		self.knights_to_render = Knight(self.level)
+		self.knight = Knight(self.level, randint(0, 3), (randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128)))
 
 		# Movement config
 		self.step_increment = 20
 		self.distance_traveled = 0
 		self.min_travel_distance = 12
 
-	def update_animation_frame(self, animation_dt):
+	def update_animation_frame(self, animation_dt, level):
 		self.current_time += animation_dt
+		self.level = level
 		if self.current_time >= self.animation_time:
 			self.current_time = 0
 			self.current_frame += 1
@@ -32,62 +33,62 @@ class AnimateKnights:
 			self.update_level()
 			if self.current_frame >= self.animation_frames:
 				self.current_frame = 0
-		self.knights_to_render.current_frame = self.current_frame
+		self.knight.current_frame = self.current_frame
 		self.render_knights()
 
 	def update_level(self):
-		if self.level != self.knights_to_render.level:
-			self.knights_to_render.level = self.level
-			self.knights_to_render.create_knight_animations()
+		if self.level != self.knight.level:
+			self.knight.level = self.level
+			self.knight.create_knight_animations()
 
 	def update_position(self):
-		x = self.knights_to_render.position[0]
-		y = self.knights_to_render.position[1]
+		x = self.knight.position[0]
+		y = self.knight.position[1]
 
 		# 0 is facing south/ forward
-		if self.knights_to_render.direction == 0:
+		if self.knight.direction == 0:
 			y += self.step_increment
 
 		# 1 is facing east/ right
-		elif self.knights_to_render.direction == 1:
+		elif self.knight.direction == 1:
 			x += self.step_increment
 
 		# 2 is facing west/ left
-		elif self.knights_to_render.direction == 2:
+		elif self.knight.direction == 2:
 			x -= self.step_increment
 
 		# 3 is facing north/ back
-		elif self.knights_to_render.direction == 3:
+		elif self.knight.direction == 3:
 			y -= self.step_increment
 
 		self.distance_traveled += 1
-		self.knights_to_render.position = (x, y)
+		self.knight.position = (x, y)
 
 	def update_direction(self):
-		x = self.knights_to_render.position[0]
-		y = self.knights_to_render.position[1]
+		x = self.knight.position[0]
+		y = self.knight.position[1]
 		# Check bound boxes
 		if x + self.step_increment >= self.settings.screen_width - 64:
 			self.distance_traveled = 0
-			self.knights_to_render.direction = 2
+			self.knight.direction = 2
 		elif x - self.step_increment <= 64:
 			self.distance_traveled = 0
-			self.knights_to_render.direction = 1
+			self.knight.direction = 1
 
 		elif y + self.step_increment >= self.settings.screen_height - 64:
 			self.distance_traveled = 0
-			self.knights_to_render.direction = 3
+			self.knight.direction = 3
 		elif y - self.step_increment <= 0:
 			self.distance_traveled = 0
-			self.knights_to_render.direction = 0
+			self.knight.direction = 0
 
 		# Weighted random direction change
 		if self.distance_traveled >= self.min_travel_distance:
-			rand = random.randint(0, 12) + self.distance_traveled
+			rand = randint(0, 12) + self.distance_traveled
 			if rand > self.step_increment / 1.5:
 				self.distance_traveled = 0
-				self.knights_to_render.direction = \
-					random.randint(0, 3)
+				self.knight.direction = \
+					randint(0, 3)
 
 	def render_knights(self):
-		self.screen.blit(self.knights_to_render.get_sprite(), self.knights_to_render.position)
+		self.screen.blit(self.knight.get_sprite(), self.knight.position)
