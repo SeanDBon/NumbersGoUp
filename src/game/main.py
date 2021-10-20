@@ -2,7 +2,6 @@ import sys
 
 import pygame
 from pygame import mixer
-from random import *
 from settings import Settings
 from .draw_weapons import WeaponsLayer
 from .animator_knights import AnimateKnight
@@ -128,6 +127,7 @@ class NumbersGoUp:
         if self.total_points > self.next_level:
             if self.weapon_level < 11:
                 self.weapon_level += 1
+                self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
             self.next_level = self.next_level * 10
 
         for knight in self.knights_to_render:
