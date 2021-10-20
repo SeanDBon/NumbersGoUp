@@ -18,18 +18,19 @@ class AnimateKnight:
 		self.knight = Knight(self.level, randint(0, 3), (randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128)))
 
 		# Movement config
-		self.step_increment = 20
+		self.step_increment = 5
 		self.distance_traveled = 0
-		self.min_travel_distance = 12
+		self.min_travel_distance = 50
 
 	def update_animation_frame(self, animation_dt, level):
 		self.current_time += animation_dt
 		self.level = level
+		self.update_position()
+		self.distance_traveled += 1
 		if self.current_time >= self.animation_time:
 			self.current_time = 0
 			self.current_frame += 1
 			self.update_direction()
-			self.update_position()
 			self.update_level()
 			if self.current_frame >= self.animation_frames:
 				self.current_frame = 0
@@ -61,24 +62,23 @@ class AnimateKnight:
 		elif self.knight.direction == 3:
 			y -= self.step_increment
 
-		self.distance_traveled += 1
 		self.knight.position = (x, y)
 
 	def update_direction(self):
 		x = self.knight.position[0]
 		y = self.knight.position[1]
 		# Check bound boxes
-		if x + self.step_increment >= self.settings.screen_width - 64:
+		if x + self.step_increment >= self.settings.screen_width - 70:
 			self.distance_traveled = 0
 			self.knight.direction = 2
-		elif x - self.step_increment <= 64:
+		elif x - self.step_increment <= 0:
 			self.distance_traveled = 0
 			self.knight.direction = 1
 
-		elif y + self.step_increment >= self.settings.screen_height - 64:
+		elif y + self.step_increment >= self.settings.screen_height - 103.5:
 			self.distance_traveled = 0
 			self.knight.direction = 3
-		elif y - self.step_increment <= 0:
+		elif y - self.step_increment <= 20:
 			self.distance_traveled = 0
 			self.knight.direction = 0
 

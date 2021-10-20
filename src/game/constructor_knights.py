@@ -1,7 +1,5 @@
 import pygame
 from . import spritesheet
-from random import *
-from settings import Settings
 
 
 class Knight:
