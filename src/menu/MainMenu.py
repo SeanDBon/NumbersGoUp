@@ -2,7 +2,7 @@ from .Menu import *
 from ..game import main
 import sys
 import pygame as pg
-from settings import Settings
+from src.settings import Settings
 
 
 

@@ -1,10 +1,9 @@
 import sys
 
-import pygame
 from pygame import mixer
-from settings import Settings
-from .draw_weapons import WeaponsLayer
-from .animator_knights import AnimateKnight
+from .data.KnightAsset import *
+from .data.WeaponAsset import *
+
 
 """Background Music"""
 mixer.init()
@@ -30,13 +29,16 @@ class NumbersGoUp:
 
         self.animation_dt = 0
 
-        # Create initial weapons layer (weapon level, weapon amount)
-        self.weapons_to_render = WeaponsLayer(self.weapon_level, self.num_weapons).draw_weapons_layer()
-        # self.render_knights = AnimateKnights(self.screen, self.weapon_level, num_knights=5)
+        self.weapon_factory = WeaponAssetFactory()
+        self.weapons_to_render = []
+        for weapon_count in range(self.num_weapons):
+            weapon_type = randint(0, 5)
+            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, weapon_type))
 
+        self.knight_factory = KnightAssetFactory()
         self.knights_to_render = []
         for knight_count in range(self.num_knights):
-            self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
+            self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
 
         self.total_points = 0
         self.next_level = 1000
@@ -102,7 +104,7 @@ class NumbersGoUp:
         for knight in self.knights_to_render:
             for i, weapon in enumerate(self.weapons_to_render):
                 weapon_rect = weapon.get_collision_rect()
-                if weapon_rect.colliderect(knight.knight.get_collision_rect()):
+                if weapon_rect.colliderect(knight.get_collision_rect()):
                     self.pickup_sound.play()
                     self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
                     claimed_weapon = self.weapons_to_render.pop(i)
@@ -121,45 +123,45 @@ class NumbersGoUp:
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.backgrounds[self.weapon_level], (0, 0))
         if len(self.weapons_to_render) < (self.num_weapons * .8):
-            self.weapons_to_render += \
-                WeaponsLayer(self.weapon_level, self.num_weapons - len(self.weapons_to_render)).draw_weapons_layer()
+            self.weapons_to_render.append(
+                self.weapon_factory.create(self.weapon_level, randint(0, 5)))
 
         if self.total_points > self.next_level:
             if self.weapon_level < 11:
                 self.weapon_level += 1
-                self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
+                self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
             self.next_level = self.next_level * 10
 
         for knight in self.knights_to_render:
-            knight.update_animation_frame(self.animation_dt, self.weapon_level)
+            knight.animate()
+            self.screen.blit(knight.sprite, knight.position)
 
         for weapon in self.weapons_to_render:
-
             if self.bind_to_screen_x(weapon):
-                vector_x_velocity = weapon.vector_x
+                vector_x_velocity = weapon.x_velocity
                 if vector_x_velocity > 0:
                     vector_x_velocity -= .1
                 elif vector_x_velocity < 0:
                     vector_x_velocity += .1
-                weapon.vector_x = vector_x_velocity
+                weapon.x_velocity = vector_x_velocity
             else:
-                weapon.vector_x = weapon.vector_x * -1.2
+                weapon.x_velocity = weapon.x_velocity * -1.2
 
             if self.bind_to_screen_y(weapon):
-                vector_y_velocity = weapon.vector_y
+                vector_y_velocity = weapon.y_velocity
                 if vector_y_velocity > 0:
                     vector_y_velocity -= .1
                 elif vector_y_velocity < 0:
                     vector_y_velocity += .1
-                weapon.vector_y = vector_y_velocity
+                weapon.y_velocity = vector_y_velocity
             else:
-                weapon.vector_y = weapon.vector_y * -1.2
+                weapon.y_velocity = weapon.y_velocity * -1.2
 
-            x = weapon.position[0] + weapon.vector_x
-            y = weapon.position[1] + weapon.vector_y
+            x = weapon.position[0] + weapon.x_velocity
+            y = weapon.position[1] + weapon.y_velocity
             weapon.position = (x, y)
 
-            self.screen.blit(weapon.image, weapon.position)
+            self.screen.blit(weapon.sprite, weapon.position)
 
         # Check collisions
         self.mouse_collision()
