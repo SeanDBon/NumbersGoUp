@@ -10,6 +10,36 @@ class WeaponAsset(Asset):
 
 		self.name = name
 		self.level = level
+		self.settings = Settings()
+
+	def update_asset_position_in_bounds(self):
+		self.update_asset_position()
+		self.bounce_off_screen_bounds()
+
+	def bounce_off_screen_bounds(self):
+		if 0 < self.position[0] < self.settings.screen_width - 64:
+			vector_x_velocity = self.x_velocity
+			if vector_x_velocity > 0:
+				vector_x_velocity -= .05
+			elif vector_x_velocity < 0:
+				vector_x_velocity += .05
+			self.x_velocity = vector_x_velocity
+		else:
+			self.x_velocity = self.x_velocity * -1
+
+		if 0 < self.position[1] < self.settings.screen_height - 64:
+			vector_y_velocity = self.y_velocity
+			if vector_y_velocity > 0:
+				vector_y_velocity -= .05
+			elif vector_y_velocity < 0:
+				vector_y_velocity += .05
+			self.y_velocity = vector_y_velocity
+		else:
+			self.y_velocity = self.y_velocity * -1
+
+		x = self.position[0] + self.x_velocity
+		y = self.position[1] + self.y_velocity
+		self.position = (x, y)
 
 
 class WeaponAssetFactory:
@@ -25,7 +55,7 @@ class WeaponAssetFactory:
 	def create(self, level, weapon_type):
 		pos = (randint(0, Settings().screen_width-128), randint(0, Settings().screen_height-128))
 		rotation = randint(-360, 360)
-		velocity = (uniform(-10, 10), uniform(-10, 10))
+		velocity = (uniform(-5, 5), uniform(-5, 5))
 		name = self.weapon_levels[weapon_type] + " " + self.weapon_types[level]
 		rect_center_offset = (16, 16)
 		return WeaponAsset(pos,

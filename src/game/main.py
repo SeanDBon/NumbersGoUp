@@ -13,19 +13,19 @@ class NumbersGoUp:
     def __init__(self):
         """Initialize the game, and create resources."""
         pygame.init()
+        pygame.display.set_caption("Numbers Go Up")
+        self.animation_dt = 0
+
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Numbers Go Up")
 
         # Initialize sound engine
         self.sound_engine = SoundEngine()
 
-        self.num_weapons = 200
         self.weapon_level = 0
 
+        self.num_weapons = 200
         self.num_knights = 5
-
-        self.animation_dt = 0
 
         self.weapon_factory = WeaponAssetFactory()
         self.weapons_to_render = []
@@ -67,7 +67,6 @@ class NumbersGoUp:
             self.point_text = self.my_font.render("Points: " + str(self.total_points), False, (255, 255, 255))
             self.level_text = self.my_font.render("Level: " + str(self.weapon_level + 1), False, (255, 255, 255))
             clock.tick(self.settings.FPS)
-            self.animation_dt = clock.tick(self.settings.FPS) / 1000  # Amount of seconds between each loop.
             self._check_events()
             self._update_screen()
 
@@ -75,9 +74,6 @@ class NumbersGoUp:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            # elif event.type == pygame.VIDEORESIZE:
-            #     # There's some code to add back window content here.
-            #         self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     sys.exit()
@@ -98,8 +94,8 @@ class NumbersGoUp:
         for i in range(weapon_dif):
             self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, randint(0, 5)))
 
-        # Updates animation frames and allows movement
         for weapon in self.weapons_to_render:
+            weapon.update_asset_position_in_bounds()
             self.screen.blit(weapon.sprite, weapon.position)
 
         for knight in self.knights_to_render:

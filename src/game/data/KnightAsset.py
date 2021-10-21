@@ -12,7 +12,7 @@ class KnightAsset(AnimatedAsset):
 		self.direction = direction
 		self.level = level
 		self.name = name
-		self.step_increment = 5
+		self.step_increment = 3
 		self.distance_traveled = 0
 		self.min_travel_distance = 50
 		self.settings = Settings()
