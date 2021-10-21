@@ -15,7 +15,8 @@ class AnimateKnight:
 		self.current_time = 0
 		self.animation_frames = 3
 		self.current_frame = 0
-		self.knight = Knight(self.level, randint(0, 3), (randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128)))
+		random_position = (randint(0, Settings().screen_width - 128), randint(0, Settings().screen_height - 128))
+		self.knight = Knight(self.level, randint(0, 3), random_position)
 
 		# Movement config
 		self.step_increment = 5

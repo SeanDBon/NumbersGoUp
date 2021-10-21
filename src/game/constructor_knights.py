@@ -3,7 +3,7 @@ from . import spritesheet
 
 
 class Knight:
-	def __init__(self, level, direction=0, position=(100, 100)):
+	def __init__(self, level, direction=0, position=(0, 0)):
 		# Each knight can have 4 directions, 0 -3
 		self.sprites = {
 			0: [],
