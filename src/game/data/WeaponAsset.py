@@ -10,11 +10,19 @@ class WeaponAsset(Asset):
 
 		self.name = name
 		self.level = level
+		self.going_to_loot_sack = False
 		self.settings = Settings()
+
+	def go_to_loot_sack(self, loot_sack_rect_center):
+		vec_x = (loot_sack_rect_center[0] + 40 - self.position[0]) / 100
+		vec_y = (loot_sack_rect_center[1] + 40 - self.position[1]) / 100
+		self.x_velocity = vec_x
+		self.y_velocity = vec_y
 
 	def update_asset_position_in_bounds(self):
 		self.update_asset_position()
-		self.bounce_off_screen_bounds()
+		if not self.going_to_loot_sack:
+			self.bounce_off_screen_bounds()
 
 	def bounce_off_screen_bounds(self):
 		if 0 < self.position[0] < self.settings.screen_width - 64:

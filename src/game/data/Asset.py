@@ -33,3 +33,5 @@ class Asset:
         y_vector = self.position[1] + self.y_velocity
         self.position = (x_vector, y_vector)
 
+    def update_asset_rotation(self):
+        self.sprite = pygame.transform.rotate(self.sprite, self.rotation)
