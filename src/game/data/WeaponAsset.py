@@ -1,6 +1,6 @@
 from .Asset import *
 import pygame
-from .. import spritesheet
+from .SpriteSheet import *
 from random import *
 from ...settings import Settings
 
@@ -16,7 +16,7 @@ class WeaponAsset(Asset):
 class WeaponAssetFactory:
 	def __init__(self):
 		sprite_sheet_image = pygame.image.load('resources/assets/weapons_sprite.png').convert_alpha()
-		self.sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
+		self.sprite_sheet = SpriteSheet(sprite_sheet_image)
 		self.weapon_types = ["Sword", "Halberd", "Staff", "Bow", "Shield", "Special"]
 		self.weapon_levels = ["Wood", "Bronze", "Iron", "Steel", "Obsidian", "Gold", "Diamond", "Zamorak", "Emerald", "Ruby",
 							"Divine", "Void"]

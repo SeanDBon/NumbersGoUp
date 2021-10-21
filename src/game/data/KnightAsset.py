@@ -1,6 +1,5 @@
 from .AnimatedAsset import *
-import pygame
-from .. import spritesheet
+from .SpriteSheet import *
 from random import *
 from ...settings import Settings
 
@@ -63,7 +62,7 @@ class KnightAsset(AnimatedAsset):
 class KnightAssetFactory:
 	def __init__(self):
 		sprite_sheet_image = pygame.image.load('resources/assets/knights_sprite.png').convert_alpha()
-		self.sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
+		self.sprite_sheet = SpriteSheet(sprite_sheet_image)
 		self.animation_frames = []
 		self.create_knight_animations()
 
