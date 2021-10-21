@@ -21,7 +21,7 @@ class NumbersGoUp:
         self.sound_engine = SoundEngine()
 
         self.num_weapons = 200
-        self.weapon_level = 4
+        self.weapon_level = 0
 
         self.num_knights = 5
 
