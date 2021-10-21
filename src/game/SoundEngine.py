@@ -1,6 +1,6 @@
 from pygame import mixer
 
-from settings import Settings
+from ..settings import Settings
 
 
 class SoundEngine:

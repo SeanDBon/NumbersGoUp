@@ -1,12 +1,10 @@
 import sys
 
-import pygame
-
-from settings import Settings
-from .sound_engine import SoundEngine
-from .animator_weapons import AnimateWeapon
-from .animator_knights import AnimateKnight
-from .detect_collision import CollisionDetection
+from .data.KnightAsset import *
+from .data.WeaponAsset import *
+from .CollisionDetection import CollisionDetection
+from .SoundEngine import SoundEngine
+from ..settings import Settings
 
 
 class NumbersGoUp:
@@ -29,15 +27,16 @@ class NumbersGoUp:
 
         self.animation_dt = 0
 
-        # Create initial weapons (screen, level)
+        self.weapon_factory = WeaponAssetFactory()
         self.weapons_to_render = []
-        for i in range(self.num_weapons):
-            self.weapons_to_render.append(AnimateWeapon(self.screen, self.weapon_level, 0))
+        for weapon_count in range(self.num_weapons):
+            weapon_type = randint(0, 5)
+            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, weapon_type))
 
-        # Create initial knights (screen, level)
+        self.knight_factory = KnightAssetFactory()
         self.knights_to_render = []
         for knight_count in range(self.num_knights):
-            self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
+            self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
 
         # Score trackers
         self.total_points = 0
@@ -87,25 +86,25 @@ class NumbersGoUp:
         # Draw background layers each frame to 'reset' the screen
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.backgrounds[self.weapon_level], (0, 0))
-
         # Level up TODO: make this a function
         if self.total_points > self.next_level:
             if self.weapon_level < 11:
                 self.weapon_level += 1
-                self.knights_to_render.append(AnimateKnight(self.screen, self.weapon_level))
+                self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
             self.next_level = self.next_level * 10
 
         # Keep the weapons refilled on screen
         weapon_dif = self.num_weapons - len(self.weapons_to_render)
         for i in range(weapon_dif):
-            self.weapons_to_render.append(AnimateWeapon(self.screen, self.weapon_level, 0))
+            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, randint(0, 5)))
 
         # Updates animation frames and allows movement
         for weapon in self.weapons_to_render:
-            weapon.update_animation_frame(self.weapon_level)
+            self.screen.blit(weapon.sprite, weapon.position)
 
         for knight in self.knights_to_render:
-            knight.update_animation_frame(self.animation_dt, self.weapon_level)
+            knight.animate()
+            self.screen.blit(knight.sprite, knight.position)
 
         CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render)
 

@@ -13,12 +13,12 @@ class CollisionDetection:
 	def check_weapon_collisions(self):
 		for i, weapon in enumerate(self.weapon_objects):
 			collided = False
-			weapon_rect = weapon.weapon.get_collision_rect()
+			weapon_rect = weapon.get_collision_rect()
 			if weapon_rect.collidepoint(pygame.mouse.get_pos()):
 				collided = True
 			else:
 				for knight in self.knight_objects:
-					if weapon_rect.colliderect(knight.knight.get_collision_rect()):
+					if weapon_rect.colliderect(knight.get_collision_rect()):
 						collided = True
 			if collided:
 				self.weapons_collided(i)
