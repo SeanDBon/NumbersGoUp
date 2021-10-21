@@ -2,8 +2,8 @@ import sys
 
 from .data.KnightAsset import *
 from .data.WeaponAsset import *
-from .detect_collision import CollisionDetection
-from .sound_engine import SoundEngine
+from .CollisionDetection import CollisionDetection
+from .SoundEngine import SoundEngine
 from ..settings import Settings
 
 
