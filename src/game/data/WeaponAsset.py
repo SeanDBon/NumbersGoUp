@@ -29,7 +29,7 @@ class WeaponAssetFactory:
 		name = self.weapon_levels[weapon_type] + " " + self.weapon_types[level]
 		rect_center_offset = (16, 16)
 		return WeaponAsset(pos,
-							self.weapon_frames[level - 1][weapon_type],
+							self.weapon_frames[level][weapon_type],
 							rotation,
 							rect_center_offset,
 							velocity,

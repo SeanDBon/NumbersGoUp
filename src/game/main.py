@@ -1,15 +1,10 @@
 import sys
 
-from pygame import mixer
 from .data.KnightAsset import *
 from .data.WeaponAsset import *
-
-
-"""Background Music"""
-mixer.init()
-mixer.music.load('resources/music/Background.mp3')
-mixer.music.play(-1)
-mixer.music.set_volume(.009)
+from .detect_collision import CollisionDetection
+from .sound_engine import SoundEngine
+from ..settings import Settings
 
 
 class NumbersGoUp:
@@ -22,8 +17,11 @@ class NumbersGoUp:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Numbers Go Up")
 
-        self.num_weapons = 300
-        self.weapon_level = 1
+        # Initialize sound engine
+        self.sound_engine = SoundEngine()
+
+        self.num_weapons = 200
+        self.weapon_level = 4
 
         self.num_knights = 5
 
@@ -40,12 +38,15 @@ class NumbersGoUp:
         for knight_count in range(self.num_knights):
             self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
 
+        # Score trackers
         self.total_points = 0
-        self.next_level = 1000
         self.claimed_weapons = {}
 
+        # Game balance modifiers
+        self.next_level = 1000
         self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25, 527343.75, 9228515.625]
 
+        # Initialize font and set global default font
         pygame.font.init()
         self.my_font = pygame.font.SysFont('Futura', 50)
 
@@ -57,10 +58,6 @@ class NumbersGoUp:
         # self.backgrounds.append(background2)
         for i in range(11):
             self.backgrounds.append(background1)
-
-        """Sound Effects"""
-        self.pickup_sound = mixer.Sound('resources/sounds/pickup.mp3')
-        self.pickup_sound.set_volume(.05)
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -85,87 +82,31 @@ class NumbersGoUp:
                 if event.key == pygame.K_q:
                     sys.exit()
 
-    def mouse_collision(self):
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION:
-                for i, weapon in enumerate(self.weapons_to_render):
-                    weapon_rect = weapon.get_collision_rect()
-                    if weapon_rect.collidepoint(pygame.mouse.get_pos()):
-                        self.pickup_sound.play()
-                        self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
-                        claimed_weapon = self.weapons_to_render.pop(i)
-                        print(self.claimed_weapons)
-                        if claimed_weapon.name not in self.claimed_weapons.keys():
-                            self.claimed_weapons[claimed_weapon.name] = 0
-                        else:
-                            self.claimed_weapons[claimed_weapon.name] += 1
-
-    def knight_collision(self):
-        for knight in self.knights_to_render:
-            for i, weapon in enumerate(self.weapons_to_render):
-                weapon_rect = weapon.get_collision_rect()
-                if weapon_rect.colliderect(knight.get_collision_rect()):
-                    self.pickup_sound.play()
-                    self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
-                    claimed_weapon = self.weapons_to_render.pop(i)
-                    if claimed_weapon.name not in self.claimed_weapons.keys():
-                        self.claimed_weapons[claimed_weapon.name] = 0
-                    else:
-                        self.claimed_weapons[claimed_weapon.name] += 1
-
-    def bind_to_screen_x(self, weapon):
-        return 0 < weapon.position[0] < self.settings.screen_width - 64
-
-    def bind_to_screen_y(self, weapon):
-        return 0 < weapon.position[1] < self.settings.screen_height - 64
-
     def _update_screen(self):
+        # Draw background layers each frame to 'reset' the screen
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.backgrounds[self.weapon_level], (0, 0))
-        if len(self.weapons_to_render) < (self.num_weapons * .8):
-            self.weapons_to_render.append(
-                self.weapon_factory.create(self.weapon_level, randint(0, 5)))
-
+        # Level up TODO: make this a function
         if self.total_points > self.next_level:
             if self.weapon_level < 11:
                 self.weapon_level += 1
                 self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
             self.next_level = self.next_level * 10
 
+        # Keep the weapons refilled on screen
+        weapon_dif = self.num_weapons - len(self.weapons_to_render)
+        for i in range(weapon_dif):
+            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, randint(0, 5)))
+
+        # Updates animation frames and allows movement
+        for weapon in self.weapons_to_render:
+            self.screen.blit(weapon.sprite, weapon.position)
+
         for knight in self.knights_to_render:
             knight.animate()
             self.screen.blit(knight.sprite, knight.position)
 
-        for weapon in self.weapons_to_render:
-            if self.bind_to_screen_x(weapon):
-                vector_x_velocity = weapon.x_velocity
-                if vector_x_velocity > 0:
-                    vector_x_velocity -= .1
-                elif vector_x_velocity < 0:
-                    vector_x_velocity += .1
-                weapon.x_velocity = vector_x_velocity
-            else:
-                weapon.x_velocity = weapon.x_velocity * -1.2
-
-            if self.bind_to_screen_y(weapon):
-                vector_y_velocity = weapon.y_velocity
-                if vector_y_velocity > 0:
-                    vector_y_velocity -= .1
-                elif vector_y_velocity < 0:
-                    vector_y_velocity += .1
-                weapon.y_velocity = vector_y_velocity
-            else:
-                weapon.y_velocity = weapon.y_velocity * -1.2
-
-            x = weapon.position[0] + weapon.x_velocity
-            y = weapon.position[1] + weapon.y_velocity
-            weapon.position = (x, y)
-
-            self.screen.blit(weapon.sprite, weapon.position)
-
-        # Check collisions
-        self.mouse_collision()
-        self.knight_collision()
+        CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render)
 
         # Draw score boards
         self.screen.blit(self.point_text, (0, 0))
