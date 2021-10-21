@@ -1,5 +1,4 @@
 from .Asset import *
-import pygame
 from .SpriteSheet import *
 from random import *
 from ...settings import Settings
