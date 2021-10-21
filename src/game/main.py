@@ -1,17 +1,12 @@
 import sys
 
 import pygame
-from pygame import mixer
+
 from settings import Settings
+from .sound_engine import SoundEngine
 from .animator_weapons import AnimateWeapon
 from .animator_knights import AnimateKnight
 from .detect_collision import CollisionDetection
-
-"""Background Music"""
-mixer.init()
-mixer.music.load('resources/music/Background.mp3')
-mixer.music.play(-1)
-mixer.music.set_volume(.009)
 
 
 class NumbersGoUp:
@@ -24,10 +19,13 @@ class NumbersGoUp:
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Numbers Go Up")
 
-        self.num_weapons = 50
+        # Initialize sound engine
+        self.sound_engine = SoundEngine()
+
+        self.num_weapons = 200
         self.weapon_level = 0
 
-        self.num_knights = 1
+        self.num_knights = 5
 
         self.animation_dt = 0
 
@@ -61,10 +59,6 @@ class NumbersGoUp:
         # self.backgrounds.append(background2)
         for i in range(11):
             self.backgrounds.append(background1)
-
-        """Sound Effects"""
-        self.pickup_sound = mixer.Sound('resources/sounds/pickup.mp3')
-        self.pickup_sound.set_volume(.05)
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -102,8 +96,9 @@ class NumbersGoUp:
             self.next_level = self.next_level * 10
 
         # Keep the weapons refilled on screen
-        if len(self.weapons_to_render) < (self.num_weapons * .8):
-            pass
+        weapon_dif = self.num_weapons - len(self.weapons_to_render)
+        for i in range(weapon_dif):
+            self.weapons_to_render.append(AnimateWeapon(self.screen, self.weapon_level, 0))
 
         # Updates animation frames and allows movement
         for weapon in self.weapons_to_render:
@@ -112,8 +107,7 @@ class NumbersGoUp:
         for knight in self.knights_to_render:
             knight.update_animation_frame(self.animation_dt, self.weapon_level)
 
-        collision_detection = CollisionDetection(self.weapons_to_render, self.knights_to_render)
-        collision_detection.check_weapon_collisions()
+        CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render)
 
         # Draw score boards
         self.screen.blit(self.point_text, (0, 0))
