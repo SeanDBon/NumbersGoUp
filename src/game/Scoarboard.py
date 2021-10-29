@@ -48,6 +48,7 @@ class Scores:
 			self.next_level = self.next_level * 10
 
 	def render_scoreboard(self,screen):
+		self.level_up()
 		# Draw score boards
 		point_text = self.font.render("Points: " + str(self.total_points), False, (255, 255, 255))
 		level_text = self.font.render("Level: " + str(self.level + 1), False, (255, 255, 255))
