@@ -2,7 +2,8 @@ import pygame
 
 
 class CollisionDetection:
-	def __init__(self, sound_engine, weapon_objects, knight_objects):
+	def __init__(self, scores, sound_engine, weapon_objects, knight_objects):
+		self.scores = scores
 		self.sound_engine = sound_engine
 		self.weapon_objects = weapon_objects
 		self.knight_objects = knight_objects
@@ -25,6 +26,7 @@ class CollisionDetection:
 
 	def weapons_collided(self, weapon):
 		claimed_weapon = self.weapon_objects.pop(weapon)
+		self.scores.claim_weapon(claimed_weapon)
 		self.sound_engine.play_sound_effect('pickup')
 
 		# self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
