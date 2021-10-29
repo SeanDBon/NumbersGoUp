@@ -63,7 +63,7 @@ class WeaponAssetFactory:
 		pos = (randint(0, Settings().screen_width-128), randint(0, Settings().screen_height-128))
 		rotation = randint(-360, 360)
 		velocity = (uniform(-5, 5), uniform(-5, 5))
-		name = self.weapon_levels[weapon_type] + " " + self.weapon_types[level]
+		name = self.weapon_levels[level] + " " + self.weapon_types[weapon_type]
 		rect_center_offset = (16, 16)
 		return WeaponAsset(self.weapon_frames[level][weapon_type],
 							pos,

@@ -2,7 +2,9 @@ import pygame
 
 
 class CollisionDetection:
-	def __init__(self, sound_engine, weapon_objects, knight_objects, loot_sack):
+
+	def __init__(self, scores, sound_engine, weapon_objects, knight_objects):
+		self.scores = scores
 		self.sound_engine = sound_engine
 		self.weapon_objects = weapon_objects
 		self.knight_objects = knight_objects
@@ -31,13 +33,10 @@ class CollisionDetection:
 					self.sound_engine.play_sound_effect('pickup')
 
 	def weapons_collided(self, weapon):
+
+		claimed_weapon = self.weapon_objects.pop(weapon)
+		self.scores.claim_weapon(claimed_weapon)
+		self.sound_engine.play_sound_effect('pickup')
+
 		self.weapon_objects[weapon].go_to_loot_sack(self.loot_sack.get_collision_rect())
 		self.weapon_objects[weapon].going_to_loot_sack = True
-
-
-		# self.total_points += ((weapon.level + 1) * self.point_modifiers[self.weapon_level]) * 10
-		# print(self.claimed_weapons)
-		# if claimed_weapon.weapon.name not in self.claimed_weapons.keys():
-		# 	self.claimed_weapons[claimed_weapon.weapon.name] = 0
-		# else:
-		# 	self.claimed_weapons[claimed_weapon.weapon.name] += 1
