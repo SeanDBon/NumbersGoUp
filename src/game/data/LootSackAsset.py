@@ -3,7 +3,7 @@ from .SpriteSheet import SpriteSheet
 
 
 class LootSackAsset(Asset):
-	def __init__(self, level, position=(1550, 780)):
+	def __init__(self, level, position=(1610, 810)):
 		self.sprite_sheet = SpriteSheet('loot_sack.png').get_image(frame=0,
 																	level=0,
 																	width=32,
