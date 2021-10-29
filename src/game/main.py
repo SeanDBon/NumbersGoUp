@@ -54,8 +54,8 @@ class NumbersGoUp:
         self.my_font = pygame.font.SysFont('Futura', 50)
 
         """Background Images"""
-        background1 = pygame.image.load('resources/images/mountains.png')
-        # background2 = pygame.image.load('resources/images/ocean.jpg')
+        background1 = pygame.image.load('resources/assets/mountains.png')
+        # background2 = pygame.image.load('resources/assets/ocean.jpg')
         self.backgrounds = []
         self.backgrounds.append(background1)
         # self.backgrounds.append(background2)
