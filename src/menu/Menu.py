@@ -3,6 +3,7 @@ import pygame.mixer
 from pygame import mixer
 import sys
 
+
 class Menu:
     def __init__(self, game):
         self.game = game
@@ -90,7 +91,7 @@ class StartScreen(Menu):
 
 class OptionsMenu(StartScreen):
     def __init__(self, game):
-        StartScreen.__init__(self, game)
+        super().__init__(game)
         self.state = 'Volume'
         self.volx, self.voly = self.mid_w, self.mid_h + 70
         self.controlsx, self.controlsy = self.mid_w, self.mid_h + 140
@@ -126,7 +127,7 @@ class OptionsMenu(StartScreen):
 
 class CreditsMenu(StartScreen):
     def __init__(self, game):
-        StartScreen.__init__(self, game)
+        super().__init__(game)
         self.state = "Nick"
         self.nickx, self.nicky = self.mid_w, self.mid_h + 70
         self.seanx, self.seany = self.mid_w, self.mid_h + 140
@@ -152,6 +153,7 @@ class CreditsMenu(StartScreen):
             self.game.draw_text('Nick Bonorden', 35, self.nickx, self.nicky)
             self.game.draw_text('Sean Bonorden', 35, self.seanx, self.seany)
             self.game.draw_text('Joseph Nevienski', 35, self.josephx, self.josephy)
+            self.move_cursor()
             self.draw_cursor()
             self.blit_screen()
 
