@@ -33,6 +33,9 @@ class NumbersGoUp:
         # Setup scores and scoreboard
         self.scores = Scores()
 
+        # Setup loot sack
+        self.loot_sack = LootSackAsset(1)
+
         # Initialize weapon class
         self.weapon_factory = WeaponAssetFactory()
         self.weapons_to_render = []
@@ -96,5 +99,5 @@ class NumbersGoUp:
             self.screen.blit(knight.sprite, knight.position)
 
         CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
-
+        self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
         pygame.display.update()
