@@ -4,8 +4,8 @@ from ...settings import Settings
 
 
 class AnimatedAsset(Asset):
-	def __init__(self, position, sprite, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len):
-		super().__init__(position, sprite, rotation, rect_center_offset, velocity)
+	def __init__(self, sprite, position, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len):
+		super().__init__(sprite, position, rotation, rect_center_offset, velocity)
 
 		"""Data needed to animate a sprite"""
 		self.animation_dt = pygame.time.Clock().tick(Settings().FPS) / 1000

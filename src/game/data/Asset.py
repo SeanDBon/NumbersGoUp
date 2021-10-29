@@ -3,7 +3,7 @@ import pygame
 
 class Asset:
     """Everything that displays on the screen from a sprite image."""
-    def __init__(self, position, sprite, rotation, rect_center_offset, velocity):
+    def __init__(self, sprite, position, rotation, rect_center_offset, velocity):
 
         """Position on screen of the asset. (x, y)"""
         self.position = position
@@ -33,3 +33,5 @@ class Asset:
         y_vector = self.position[1] + self.y_velocity
         self.position = (x_vector, y_vector)
 
+    def update_asset_rotation(self):
+        self.sprite = pygame.transform.rotate(self.sprite, self.rotation)

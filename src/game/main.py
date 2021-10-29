@@ -2,6 +2,7 @@ import sys
 
 from .data.KnightAsset import *
 from .data.WeaponAsset import *
+from .data.LootSackAsset import *
 from .CollisionDetection import CollisionDetection
 from .SoundEngine import SoundEngine
 from ..settings import Settings
@@ -37,6 +38,8 @@ class NumbersGoUp:
         self.knights_to_render = []
         for knight_count in range(self.num_knights):
             self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
+
+        self.loot_sack = LootSackAsset(1)
 
         # Score trackers
         self.total_points = 0
@@ -102,9 +105,10 @@ class NumbersGoUp:
             knight.animate()
             self.screen.blit(knight.sprite, knight.position)
 
-        CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render)
+        CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
 
         # Draw score boards
+        self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
         self.screen.blit(self.point_text, (0, 0))
         self.screen.blit(self.level_text, (720, 0))
 
