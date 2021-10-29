@@ -3,7 +3,7 @@ import pygame
 
 class Asset:
     """Everything that displays on the screen from a sprite image."""
-    def __init__(self, sprite, position, rotation, rect_center_offset, velocity):
+    def __init__(self, sprite, position, rotation, rect_center_offset, velocity=(0, 0)):
 
         """Position on screen of the asset. (x, y)"""
         self.position = position

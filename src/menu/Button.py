@@ -1,25 +1,18 @@
-import pygame
+from ..game.data.Asset import *
+from ..game.data.SpriteSheet import *
 
 
-class Button:
-    def __init__(self, x, y, image, scale):
-        width = image.get_width()
-        height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale), int(height * scale)))
-        self.rect = self.image.get_rect()
-        self.rect.top_left = (x, y)
+class Button(Asset):
+    def __init__(self, image, position, rotation, rect_center_offset, width, height, scale):
+        self.sprite_sheet = SpriteSheet(image).get_image(width=width, height=height, scale=scale)
+        super().__init__(self.sprite_sheet, position, rotation, rect_center_offset)
         self.clicked = False
 
-    def draw(self):
-        action = False
-        pos = pygame.mouse.get_pos()
-
-        if self.rect.collidepoint(pos):
-            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+    def check_for_click(self):
+        if self.get_collision_rect().collidepoint(pygame.mouse.get_pos()):
+            if pygame.mouse.get_pressed()[0] == 1:
                 self.clicked = True
-                action = True
-
-buy_button = Button(100, 200, resources)
-
-exit_button = Button(450, 200, exit_img)
-
+            else:
+                self.clicked = False
+        else:
+            self.clicked = False

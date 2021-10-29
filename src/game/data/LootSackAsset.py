@@ -10,5 +10,5 @@ class LootSackAsset(Asset):
 																	height=32,
 																	scale=9,
 																	color=(0, 0, 0))
-		super().__init__(self.sprite_sheet, position, 0, (144, 144), (0, 0))
+		super().__init__(self.sprite_sheet, position, 0, (144, 144))
 		self.level = level

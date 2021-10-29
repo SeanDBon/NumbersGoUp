@@ -6,7 +6,7 @@ from ...settings import Settings
 
 class WeaponAsset(Asset):
 	def __init__(self, sprite, position, rotation, rect_center_offset, velocity, name, level):
-		super().__init__(sprite, position, rotation, rect_center_offset, velocity)
+		super().__init__(sprite, position, rotation, rect_center_offset, velocity=velocity)
 
 		self.name = name
 		self.level = level
