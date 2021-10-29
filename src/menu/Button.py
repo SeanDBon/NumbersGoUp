@@ -19,3 +19,7 @@ class Button:
                 self.clicked = True
                 action = True
 
+buy_button = Button(100, 200, resources)
+
+exit_button = Button(450, 200, exit_img)
+
