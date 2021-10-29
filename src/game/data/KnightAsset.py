@@ -5,9 +5,9 @@ from ...settings import Settings
 
 
 class KnightAsset(AnimatedAsset):
-	def __init__(self, position, sprite, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len,
+	def __init__(self, sprite, position, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len,
 					direction, name, level):
-		super().__init__(position, sprite, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len)
+		super().__init__(sprite, position, rotation, rect_center_offset, velocity, animation_frames, animation_frames_len)
 
 		self.direction = direction
 		self.level = level
@@ -61,8 +61,7 @@ class KnightAsset(AnimatedAsset):
 
 class KnightAssetFactory:
 	def __init__(self):
-		sprite_sheet_image = pygame.image.load('resources/assets/knights_sprite.png').convert_alpha()
-		self.sprite_sheet = SpriteSheet(sprite_sheet_image)
+		self.sprite_sheet = SpriteSheet('knights_sprite.png')
 		self.animation_frames = []
 		self.create_knight_animations()
 
@@ -73,8 +72,8 @@ class KnightAssetFactory:
 		rotation = 0
 		rect_center_offset = (0, 5)
 		animation_frames_len = len(self.animation_frames[level][0])
-		return KnightAsset(position,
-							self.animation_frames[level][direction][1],
+		return KnightAsset(self.animation_frames[level][direction][1],
+							position,
 							rotation,
 							rect_center_offset,
 							velocity,
@@ -94,12 +93,10 @@ class KnightAssetFactory:
 			}
 			for direction in range(4):
 				for frame in range(3):
-					animation_frames[direction].append(self.construct_knight_sprite(frame+int(round((i - 1) / 3) * 3), direction))
+					image_frame = frame+int(round((i - 1) / 3) * 3)
+					animation_frames[direction].append(self.sprite_sheet.get_image(frame=image_frame,
+																					level=direction,
+																					width=75.8,
+																					height=103.5,
+																					scale=1))
 			self.animation_frames.append(animation_frames)
-
-	def construct_knight_sprite(self, frame, direction):
-		scale = 1
-		dim_x = 75.8
-		dim_y = 103.5
-		color_key = (0, 0, 0)
-		return self.sprite_sheet.get_image(frame, direction, dim_x, dim_y, scale, color_key)

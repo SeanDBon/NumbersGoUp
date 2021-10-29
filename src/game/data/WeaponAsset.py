@@ -5,8 +5,8 @@ from ...settings import Settings
 
 
 class WeaponAsset(Asset):
-	def __init__(self, position, sprite, rotation, rect_center_offset, velocity, name, level):
-		super().__init__(position, sprite, rotation, rect_center_offset, velocity)
+	def __init__(self, sprite, position, rotation, rect_center_offset, velocity, name, level):
+		super().__init__(sprite, position, rotation, rect_center_offset, velocity)
 
 		self.name = name
 		self.level = level
@@ -52,8 +52,7 @@ class WeaponAsset(Asset):
 
 class WeaponAssetFactory:
 	def __init__(self):
-		sprite_sheet_image = pygame.image.load('resources/assets/weapons_sprite.png').convert_alpha()
-		self.sprite_sheet = SpriteSheet(sprite_sheet_image)
+		self.sprite_sheet = SpriteSheet('weapons_sprite.png')
 		self.weapon_types = ["Sword", "Halberd", "Staff", "Bow", "Shield", "Special"]
 		self.weapon_levels = ["Wood", "Bronze", "Iron", "Steel", "Obsidian", "Gold", "Diamond", "Zamorak", "Emerald", "Ruby",
 							"Divine", "Void"]
@@ -66,8 +65,8 @@ class WeaponAssetFactory:
 		velocity = (uniform(-5, 5), uniform(-5, 5))
 		name = self.weapon_levels[weapon_type] + " " + self.weapon_types[level]
 		rect_center_offset = (16, 16)
-		return WeaponAsset(pos,
-							self.weapon_frames[level][weapon_type],
+		return WeaponAsset(self.weapon_frames[level][weapon_type],
+							pos,
 							rotation,
 							rect_center_offset,
 							velocity,
@@ -78,13 +77,9 @@ class WeaponAssetFactory:
 		for i, weapon_level in enumerate(self.weapon_levels):
 			weapon_frames_for_level = []
 			for y, weapon_types in enumerate(self.weapon_types):
-				weapon_frames_for_level.append(self.construct_weapon_image(y, i))
+				weapon_frames_for_level.append(self.sprite_sheet.get_image(frame=y,
+																			level=i,
+																			width=32,
+																			height=32,
+																			scale=2))
 			self.weapon_frames.append(weapon_frames_for_level)
-
-	def construct_weapon_image(self, frame, level):
-		scale = 2
-		rotation = 0
-		dim_x = 32
-		dim_y = 32
-		color_key = (0, 0, 0)
-		return self.sprite_sheet.get_image(frame, level, dim_x, dim_y, scale, color_key, rotation)
