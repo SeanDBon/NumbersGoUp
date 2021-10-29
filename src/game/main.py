@@ -4,6 +4,7 @@ from .data.KnightAsset import *
 from .data.WeaponAsset import *
 from .CollisionDetection import CollisionDetection
 from .SoundEngine import SoundEngine
+from .Scoarboard import Scores
 from ..settings import Settings
 
 
@@ -14,41 +15,37 @@ class NumbersGoUp:
         """Initialize the game, and create resources."""
         pygame.init()
         pygame.display.set_caption("Numbers Go Up")
-        self.animation_dt = 0
 
+        # Load default settings
         self.settings = Settings()
+
+        # Set up screen (very important)
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
 
         # Initialize sound engine
         self.sound_engine = SoundEngine()
 
-        self.weapon_level = 0
-
-        self.num_weapons = 200
+        # Default parameters TODO: move this and make changable with upgrades
+        self.num_weapons = 300
         self.num_knights = 5
 
+        # Setup scores and scoreboard
+        self.scores = Scores()
+
+        # Initialize weapon class
         self.weapon_factory = WeaponAssetFactory()
         self.weapons_to_render = []
+        # Render initial amount of weapons on init
         for weapon_count in range(self.num_weapons):
             weapon_type = randint(0, 5)
-            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, weapon_type))
+            self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, weapon_type))
 
+        # Initialize knight class
         self.knight_factory = KnightAssetFactory()
         self.knights_to_render = []
+        # Render initial amount of knights on init
         for knight_count in range(self.num_knights):
-            self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
-
-        # Score trackers
-        self.total_points = 0
-        self.claimed_weapons = {}
-
-        # Game balance modifiers
-        self.next_level = 1000
-        self.point_modifiers = [1, 1.5, 3, 7.5, 37.5, 281.25, 2812.5, 35156.25, 527343.75, 9228515.625]
-
-        # Initialize font and set global default font
-        pygame.font.init()
-        self.my_font = pygame.font.SysFont('Futura', 50)
+            self.knights_to_render.append(self.knight_factory.create(self.scores.level))
 
         """Background Images"""
         background1 = pygame.image.load('resources/images/mountains.png')
@@ -64,8 +61,6 @@ class NumbersGoUp:
         clock = pygame.time.Clock()
 
         while True:
-            self.point_text = self.my_font.render("Points: " + str(self.total_points), False, (255, 255, 255))
-            self.level_text = self.my_font.render("Level: " + str(self.weapon_level + 1), False, (255, 255, 255))
             clock.tick(self.settings.FPS)
             self._check_events()
             self._update_screen()
@@ -81,18 +76,15 @@ class NumbersGoUp:
     def _update_screen(self):
         # Draw background layers each frame to 'reset' the screen
         self.screen.fill((0, 0, 0))
-        self.screen.blit(self.backgrounds[self.weapon_level], (0, 0))
-        # Level up TODO: make this a function
-        if self.total_points > self.next_level:
-            if self.weapon_level < 11:
-                self.weapon_level += 1
-                self.knights_to_render.append(self.knight_factory.create(self.weapon_level))
-            self.next_level = self.next_level * 10
+        self.screen.blit(self.backgrounds[self.scores.level], (0, 0))
+
+        # Render the scoreboard
+        self.scores.render_scoreboard(self.screen)
 
         # Keep the weapons refilled on screen
         weapon_dif = self.num_weapons - len(self.weapons_to_render)
         for i in range(weapon_dif):
-            self.weapons_to_render.append(self.weapon_factory.create(self.weapon_level, randint(0, 5)))
+            self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
 
         for weapon in self.weapons_to_render:
             weapon.update_asset_position_in_bounds()
@@ -102,10 +94,6 @@ class NumbersGoUp:
             knight.animate()
             self.screen.blit(knight.sprite, knight.position)
 
-        CollisionDetection(self.sound_engine, self.weapons_to_render, self.knights_to_render)
-
-        # Draw score boards
-        self.screen.blit(self.point_text, (0, 0))
-        self.screen.blit(self.level_text, (720, 0))
+        CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render)
 
         pygame.display.update()
