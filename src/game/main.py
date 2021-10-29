@@ -2,6 +2,7 @@ import sys
 
 from .data.KnightAsset import *
 from .data.WeaponAsset import *
+from .data.LootSackAsset import *
 from .CollisionDetection import CollisionDetection
 from .SoundEngine import SoundEngine
 from .Scoarboard import Scores
@@ -94,6 +95,6 @@ class NumbersGoUp:
             knight.animate()
             self.screen.blit(knight.sprite, knight.position)
 
-        CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render)
+        CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
 
         pygame.display.update()
