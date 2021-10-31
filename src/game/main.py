@@ -108,7 +108,7 @@ class NumbersGoUp:
             if not self.game_menu.is_game_menu_showing:
                 knight.animate()
                 if knight.level != self.scores.knight_level:
-                    knight.level = self.scores.knight_level
+                    knight.update_level(self.scores.knight_level)
             self.screen.blit(knight.sprite, knight.position)
 
         if not self.game_menu.is_game_menu_showing:

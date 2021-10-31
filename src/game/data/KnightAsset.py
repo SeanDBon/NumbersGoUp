@@ -12,10 +12,13 @@ class KnightAsset(AnimatedAsset):
 		self.direction = direction
 		self.level = level
 		self.name = name
-		self.step_increment = 3
+		self.step_increment = 0
 		self.distance_traveled = 0
 		self.min_travel_distance = 50
 		self.settings = Settings()
+		self.create_step_increment()
+		self.animation_time = .6
+		self.last_frame = 0
 
 	def animate(self):
 		self.sprite = self.animation_frames[self.level][self.direction][self.current_frame]
@@ -23,6 +26,24 @@ class KnightAsset(AnimatedAsset):
 		self.update_asset_position()
 		self.update_position()
 		self.update_direction()
+
+	def update_level(self, level):
+		self.level = level
+		self.create_step_increment()
+		self.create_animation_dt()
+
+	def create_step_increment(self):
+		self.step_increment = (self.level + 1) * 1.2
+
+	def create_animation_dt(self):
+		if self.level == 3:
+			self.animation_time = .4
+		elif self.level == 6:
+			self.animation_time = .2
+		elif self.level == 9:
+			self.animation_time = .1
+		elif self.level == 12:
+			self.animation_time = .05
 
 	def update_position(self):
 		x = self.position[0]
@@ -40,6 +61,20 @@ class KnightAsset(AnimatedAsset):
 		elif self.direction == 3:
 			y -= self.step_increment
 		self.position = (x, y)
+
+	def update_animation_frame(self):
+		self.current_time += self.animation_dt
+		if self.current_time >= self.animation_time:
+			self.current_time = 0
+			if self.last_frame == 2:
+				self.current_frame = 0
+				self.last_frame = 1
+			else:
+				self.last_frame = self.current_frame
+				self.current_frame += 1
+				if self.current_frame == self.animation_frames_len:
+					self.last_frame = 2
+					self.current_frame = 1
 
 	def update_direction(self):
 		x = self.position[0]

@@ -7,7 +7,7 @@ class Scores:
 		self.total_points = 0
 		self.claimed_weapons = {}
 		self.knight_level = 0
-		self.num_knights = 1
+		self.num_knights = 0
 		self.knight_level_upgrade_cost = 1000
 		self.knight_num_upgrade_cost = 1000
 
