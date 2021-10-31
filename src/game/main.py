@@ -28,7 +28,7 @@ class NumbersGoUp:
         self.sound_engine = SoundEngine()
 
         # Show game menu
-        self.show_game_menu = False
+        self.show_game_menu = {"enabled": False}
         self.game_menu = GameMenu(self.show_game_menu)
 
         # Default parameters TODO: move this and make changeable with upgrades
@@ -82,7 +82,7 @@ class NumbersGoUp:
                 if event.key == pygame.K_q:
                     sys.exit()
                 elif event.key == pygame.K_ESCAPE:
-                    self.show_game_menu = not self.show_game_menu
+                    self.show_game_menu["enabled"] = not self.show_game_menu["enabled"]
 
     def _update_screen(self):
         # Draw background layers each frame to 'reset' the screen
@@ -98,18 +98,18 @@ class NumbersGoUp:
             self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
 
         for weapon in self.weapons_to_render:
-            if not self.show_game_menu:
+            if not self.show_game_menu["enabled"]:
                 weapon.update_asset_position_in_bounds()
             self.screen.blit(weapon.sprite, weapon.position)
 
         for knight in self.knights_to_render:
-            if not self.show_game_menu:
+            if not self.show_game_menu["enabled"]:
                 knight.animate()
             self.screen.blit(knight.sprite, knight.position)
 
-        if not self.show_game_menu:
+        if not self.show_game_menu["enabled"]:
             CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
         self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
-        if self.show_game_menu:
+        if self.show_game_menu["enabled"]:
             self.game_menu.render_menu(self.screen)
         pygame.display.update()
