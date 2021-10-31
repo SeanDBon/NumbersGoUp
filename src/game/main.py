@@ -5,8 +5,7 @@ from .data.WeaponAsset import *
 from .data.LootSackAsset import *
 from .CollisionDetection import CollisionDetection
 from .SoundEngine import SoundEngine
-from .Scoarboard import Scores
-from ..settings import Settings
+from .Scoreboard import Scores
 from ..menu.GameMenu import *
 
 
@@ -27,16 +26,14 @@ class NumbersGoUp:
         # Initialize sound engine
         self.sound_engine = SoundEngine()
 
-        # Show game menu
-        self.show_game_menu = {"enabled": False}
-        self.game_menu = GameMenu(self.show_game_menu)
-
         # Default parameters TODO: move this and make changeable with upgrades
         self.num_weapons = 300
-        self.num_knights = 5
 
         # Setup scores and scoreboard
         self.scores = Scores()
+
+        # Show game menu
+        self.game_menu = GameMenu(self.scores)
 
         # Setup loot sack
         self.loot_sack = LootSackAsset(1)
@@ -53,8 +50,8 @@ class NumbersGoUp:
         self.knight_factory = KnightAssetFactory()
         self.knights_to_render = []
         # Render initial amount of knights on init
-        for knight_count in range(self.num_knights):
-            self.knights_to_render.append(self.knight_factory.create(self.scores.level))
+        for knight_count in range(self.scores.num_knights):
+            self.knights_to_render.append(self.knight_factory.create(self.scores.knight_level))
 
         """Background Images"""
         background1 = pygame.image.load('resources/assets/mountains.png')
@@ -82,7 +79,7 @@ class NumbersGoUp:
                 if event.key == pygame.K_q:
                     sys.exit()
                 elif event.key == pygame.K_ESCAPE:
-                    self.show_game_menu["enabled"] = not self.show_game_menu["enabled"]
+                    self.game_menu.is_game_menu_showing = not self.game_menu.is_game_menu_showing
 
     def _update_screen(self):
         # Draw background layers each frame to 'reset' the screen
@@ -97,19 +94,26 @@ class NumbersGoUp:
         for i in range(weapon_dif):
             self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
 
+        # Update number of knights on screen
+        knight_dif = self.scores.num_knights - len(self.knights_to_render)
+        for i in range(knight_dif):
+            self.knights_to_render.append(self.knight_factory.create(self.scores.knight_level))
+
         for weapon in self.weapons_to_render:
-            if not self.show_game_menu["enabled"]:
+            if not self.game_menu.is_game_menu_showing:
                 weapon.update_asset_position_in_bounds()
             self.screen.blit(weapon.sprite, weapon.position)
 
         for knight in self.knights_to_render:
-            if not self.show_game_menu["enabled"]:
+            if not self.game_menu.is_game_menu_showing:
                 knight.animate()
+                if knight.level != self.scores.knight_level:
+                    knight.level = self.scores.knight_level
             self.screen.blit(knight.sprite, knight.position)
 
-        if not self.show_game_menu["enabled"]:
+        if not self.game_menu.is_game_menu_showing:
             CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
         self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
-        if self.show_game_menu["enabled"]:
+        if self.game_menu.is_game_menu_showing:
             self.game_menu.render_menu(self.screen)
         pygame.display.update()

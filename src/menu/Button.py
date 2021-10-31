@@ -11,10 +11,10 @@ class Button(Asset):
 
     def check_for_click(self):
         if self.get_collision_rect().collidepoint(pygame.mouse.get_pos()):
-            if pygame.mouse.get_pressed()[0] == 1:
+            if pygame.mouse.get_pressed()[0] == 1 and not self.clicked:
                 self.clicked = True
                 self.callback()
-            else:
+            elif pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
         else:
             self.clicked = False

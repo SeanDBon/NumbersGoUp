@@ -96,7 +96,7 @@ class KnightAssetFactory:
 					image_frame = frame+int(round((i - 1) / 3) * 3)
 					animation_frames[direction].append(self.sprite_sheet.get_image(frame=image_frame,
 																					level=direction,
-																					width=75.8,
+																					width=75.9,
 																					height=103.5,
 																					scale=1))
 			self.animation_frames.append(animation_frames)
