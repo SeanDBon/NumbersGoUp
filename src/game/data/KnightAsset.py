@@ -97,7 +97,7 @@ class KnightAsset(AnimatedAsset):
 		# Weighted random direction change
 		if self.distance_traveled >= self.min_travel_distance:
 			rand = randint(0, 100) + self.distance_traveled
-			if rand > self.step_increment * 65:
+			if rand > self.step_increment * 49:
 				self.distance_traveled = 0
 				self.direction = randint(0, 3)
 

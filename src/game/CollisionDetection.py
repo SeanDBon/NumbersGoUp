@@ -20,6 +20,8 @@ class CollisionDetection:
 				weapon_rect = weapon.get_collision_rect()
 				if weapon_rect.collidepoint(pygame.mouse.get_pos()):
 					collided = True
+				elif weapon_rect.colliderect(self.loot_sack.get_collision_rect()):
+					collided = True
 				else:
 					for knight in self.knight_objects:
 						if weapon_rect.colliderect(knight.get_collision_rect()):

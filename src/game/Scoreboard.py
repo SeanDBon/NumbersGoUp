@@ -10,6 +10,10 @@ class Scores:
 		self.num_knights = 0
 		self.knight_level_upgrade_cost = 1000
 		self.knight_num_upgrade_cost = 1000
+		self.weapon_level_upgrade_cost = 1000
+		self.weapon_num_upgrade_cost = 1000
+		self.weapon_level = 0
+		self.num_weapons = 100
 
 		# Game balance modifiers
 		self.next_level = 1000

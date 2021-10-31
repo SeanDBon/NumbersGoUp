@@ -1,12 +1,15 @@
 import sys
 
+import pygame.image
+
 from .data.KnightAsset import *
 from .data.WeaponAsset import *
 from .data.LootSackAsset import *
 from .CollisionDetection import CollisionDetection
 from .SoundEngine import SoundEngine
 from .Scoreboard import Scores
-from ..menu.GameMenu import *
+from ..menu.KnightMenu import *
+from ..menu.WeaponMenu import *
 
 
 class NumbersGoUp:
@@ -23,17 +26,23 @@ class NumbersGoUp:
         # Set up screen (very important)
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
 
+        # Setup scores and scoreboard
+        self.scores = Scores()
+
+        # weapon icon button
+        self.weapon_menu_button = Button('weapon_menu_icon.png', (5, 1025), 0, (24.99, 24.99), 600, 600, 0.0833,
+                                         self.weapon_menu_button_callback)
+        self.is_weapon_menu_showing = False
+        self.weapon_menu = WeaponMenu(self.screen, self.scores)
+
         # Initialize sound engine
         self.sound_engine = SoundEngine()
 
         # Default parameters TODO: move this and make changeable with upgrades
         self.num_weapons = 300
 
-        # Setup scores and scoreboard
-        self.scores = Scores()
-
         # Show game menu
-        self.game_menu = GameMenu(self.scores)
+        self.game_menu = KnightMenu(self.screen, self.scores)
 
         # Setup loot sack
         self.loot_sack = LootSackAsset(1)
@@ -41,8 +50,9 @@ class NumbersGoUp:
         # Initialize weapon class
         self.weapon_factory = WeaponAssetFactory()
         self.weapons_to_render = []
+
         # Render initial amount of weapons on init
-        for weapon_count in range(self.num_weapons):
+        for weapon_count in range(self.scores.num_weapons):
             weapon_type = randint(0, 5)
             self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, weapon_type))
 
@@ -61,6 +71,9 @@ class NumbersGoUp:
         # self.backgrounds.append(background2)
         for i in range(11):
             self.backgrounds.append(background1)
+
+    def weapon_menu_button_callback(self):
+        self.is_weapon_menu_showing = not self.is_weapon_menu_showing
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -90,9 +103,10 @@ class NumbersGoUp:
         self.scores.render_scoreboard(self.screen)
 
         # Keep the weapons refilled on screen
-        weapon_dif = self.num_weapons - len(self.weapons_to_render)
-        for i in range(weapon_dif):
-            self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
+        if len(self.weapons_to_render) <= (self.scores.num_weapons / 2):
+            weapon_dif = self.scores.num_weapons - len(self.weapons_to_render)
+            for i in range(weapon_dif):
+                self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
 
         # Update number of knights on screen
         knight_dif = self.scores.num_knights - len(self.knights_to_render)
@@ -115,5 +129,11 @@ class NumbersGoUp:
             CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
         self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
         if self.game_menu.is_game_menu_showing:
-            self.game_menu.render_menu(self.screen)
+            self.game_menu.render_menu()
+
+        self.screen.blit(self.weapon_menu_button.sprite, (5, 1025))
+        self.weapon_menu_button.check_for_click()
+        if self.is_weapon_menu_showing:
+            self.weapon_menu.render_menu()
+
         pygame.display.update()
