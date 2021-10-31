@@ -17,8 +17,6 @@ class GameMenu:
         screen.blit(self.button1.sprite, (1211, 362))
 
         self.button1.check_for_click()
-        # if self.button1.clicked:
 
     def button1_callback(self):
-        self.show_game_menu = not self.show_game_menu
-        print('its broken')
+        self.show_game_menu["enabled"] = not self.show_game_menu["enabled"]

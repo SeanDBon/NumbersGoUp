@@ -5,7 +5,6 @@ import pygame as pg
 from src.settings import Settings
 
 
-
 class MainMenu:
     def __init__(self):
         pygame.init()
@@ -44,7 +43,6 @@ class MainMenu:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-
 
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
