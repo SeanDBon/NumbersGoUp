@@ -14,7 +14,7 @@ class KnightAsset(AnimatedAsset):
 		self.name = name
 		self.step_increment = 0
 		self.distance_traveled = 0
-		self.min_travel_distance = 50
+		self.min_travel_distance = 200
 		self.settings = Settings()
 		self.create_step_increment()
 		self.animation_time = .6
@@ -61,6 +61,7 @@ class KnightAsset(AnimatedAsset):
 		elif self.direction == 3:
 			y -= self.step_increment
 		self.position = (x, y)
+		self.distance_traveled += self.step_increment
 
 	def update_animation_frame(self):
 		self.current_time += self.animation_dt
@@ -92,6 +93,13 @@ class KnightAsset(AnimatedAsset):
 		elif y - self.step_increment <= 20:
 			self.distance_traveled = 0
 			self.direction = 0
+
+		# Weighted random direction change
+		if self.distance_traveled >= self.min_travel_distance:
+			rand = randint(0, 100) + self.distance_traveled
+			if rand > self.step_increment * 65:
+				self.distance_traveled = 0
+				self.direction = randint(0, 3)
 
 
 class KnightAssetFactory:
