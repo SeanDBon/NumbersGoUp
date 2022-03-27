@@ -62,6 +62,7 @@ class StartScreen(Menu):
             if self.state == 'Start':
                 Settings.isPlaying = True
             elif self.state == 'Options':
+                print("asdfasdfasdf")
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':
                 self.game.curr_menu = self.game.credits

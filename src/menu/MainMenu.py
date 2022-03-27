@@ -29,8 +29,6 @@ class MainMenu:
             leaf_game = main.NumbersGoUp()
             leaf_game.run_game()
 
-        self.curr_menu = self.main_menu
-
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

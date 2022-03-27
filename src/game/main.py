@@ -82,16 +82,17 @@ class NumbersGoUp:
 
     def weapon_menu_button_callback(self):
         self.is_knight_menu_showing = False
+        self.pause_menu.is_game_menu_showing = False
         self.is_weapon_menu_showing = not self.is_weapon_menu_showing
 
     def knight_menu_button_callback(self):
         self.is_weapon_menu_showing = False
+        self.pause_menu.is_game_menu_showing = False
         self.is_knight_menu_showing = not self.is_knight_menu_showing
 
     def run_game(self):
         """Start the main loop for the game."""
         clock = pygame.time.Clock()
-        self.sound_engine.play_music("background_1")
 
         while Settings.isPlaying:
             clock.tick(self.settings.FPS)
@@ -106,7 +107,14 @@ class NumbersGoUp:
                 if event.key == pygame.K_q:
                     sys.exit()
                 elif event.key == pygame.K_ESCAPE:
-                    self.pause_menu.is_game_menu_showing = not self.pause_menu.is_game_menu_showing
+                    self.is_knight_menu_showing = False
+                    self.is_weapon_menu_showing = False
+                    if self.pause_menu.is_game_menu_showing and self.pause_menu.show_options_menu:
+                        self.pause_menu.show_options_menu = False
+                    elif self.pause_menu.is_game_menu_showing and not self.pause_menu.show_options_menu:
+                        self.pause_menu.is_game_menu_showing = False
+                    else:
+                        self.pause_menu.is_game_menu_showing = True
 
     def _update_screen(self):
         # Draw background layers each frame to 'reset' the screen
@@ -115,6 +123,9 @@ class NumbersGoUp:
 
         # Render the scoreboard
         self.scores.render_scoreboard(self.screen)
+
+        # Update music volume
+        self.sound_engine.update_volume()
 
         # Keep the weapons refilled on screen
         if len(self.weapons_to_render) <= (self.scores.num_weapons / 2):

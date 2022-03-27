@@ -18,7 +18,7 @@ class VolumeMenu(StartScreen):
             self.game.display.fill((100, 0, 0))
             self.game.draw_text('Volume Slider', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text("Music Volume:    " + str(abs(round(Settings.music_volume * 100))), 15,  self.volx, self.voly)
-            self.game.draw_text("Effect Volume:   " + str(abs(round(Settings.sound_effect_volume, 2))), 30,  self.controlsx, self.controlsy)
+            self.game.draw_text("Effect Volume:   " + str(abs(round(Settings.sound_effect_volume * 100))), 30,  self.controlsx, self.controlsy)
             self.draw_cursor()
             self.blit_screen()
 
@@ -38,15 +38,15 @@ class VolumeMenu(StartScreen):
                 self.cursor_rect.midtop = (self.controlsx + self.offsetx, self.controlsy + self.offsety)
         elif self.game.RIGHT_KEY:
             if self.state == 'Music':
-                if round(Settings.music_volume, 2) < .10:
-                    Settings.music_volume += .01
+                if round(Settings.music_volume, 2) < 1:
+                    Settings.music_volume += .1
             else:
-                if round(Settings.sound_effect_volume, 2) < 10:
-                    Settings.sound_effect_volume += 1
+                if round(Settings.sound_effect_volume, 2) < 1:
+                    Settings.sound_effect_volume += .1
         elif self.game.LEFT_KEY:
             if self.state == 'Music':
-                if round(Settings.music_volume, 2) > 0.00:
-                    Settings.music_volume -= .01
+                if round(Settings.music_volume, 2) >= 0.1:
+                    Settings.music_volume -= .1
             else:
-                if round(Settings.sound_effect_volume, 2) > 0:
-                    Settings.sound_effect_volume -= 1
+                if round(Settings.sound_effect_volume, 2) >= 0.1:
+                    Settings.sound_effect_volume -= .1
