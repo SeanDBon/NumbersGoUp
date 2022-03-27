@@ -11,6 +11,7 @@ from .SoundEngine import SoundEngine
 from .Scoreboard import Scores
 from ..menu.KnightMenu import *
 from ..menu.WeaponMenu import *
+from ..menu.PauseMenu import *
 
 
 class NumbersGoUp:
@@ -30,11 +31,20 @@ class NumbersGoUp:
         # Setup scores and scoreboard
         self.scores = Scores()
 
+        # This bitch be running
+        self.this_bitch_be_running = True
+
         # weapon icon button
         self.weapon_menu_button = Button('weapon_menu_icon.png', (5, 1025), 0, (24.99, 24.99), 600, 600, 0.0833,
                                          self.weapon_menu_button_callback)
+        # knight icon button
+        self.knight_menu_button = Button('knight_menu_icon.png', (65, 1025), 0, (24.99, 24.99), 600, 600, 0.0833,
+                                         self.knight_menu_button_callback)
         self.is_weapon_menu_showing = False
         self.weapon_menu = WeaponMenu(self.screen, self.scores)
+
+        self.is_knight_menu_showing = False
+        self.knight_menu = KnightMenu(self.screen, self.scores)
 
         # Initialize sound engine
         self.sound_engine = SoundEngine()
@@ -43,7 +53,7 @@ class NumbersGoUp:
         self.num_weapons = 300
 
         # Show game menu
-        self.game_menu = KnightMenu(self.screen, self.scores)
+        self.pause_menu = PauseMenu(self.screen, self.this_bitch_be_running)
 
         # Setup loot sack
         self.loot_sack = LootSackAsset(1)
@@ -74,14 +84,19 @@ class NumbersGoUp:
             self.backgrounds.append(background1)
 
     def weapon_menu_button_callback(self):
+        self.is_knight_menu_showing = False
         self.is_weapon_menu_showing = not self.is_weapon_menu_showing
+
+    def knight_menu_button_callback(self):
+        self.is_weapon_menu_showing = False
+        self.is_knight_menu_showing = not self.is_knight_menu_showing
 
     def run_game(self):
         """Start the main loop for the game."""
         clock = pygame.time.Clock()
         self.sound_engine.play_music("background_1");
 
-        while True:
+        while self.this_bitch_be_running:
             clock.tick(self.settings.FPS)
             self._check_events()
             self._update_screen()
@@ -94,7 +109,7 @@ class NumbersGoUp:
                 if event.key == pygame.K_q:
                     sys.exit()
                 elif event.key == pygame.K_ESCAPE:
-                    self.game_menu.is_game_menu_showing = not self.game_menu.is_game_menu_showing
+                    self.pause_menu.is_game_menu_showing = not self.pause_menu.is_game_menu_showing
 
     def _update_screen(self):
         # Draw background layers each frame to 'reset' the screen
@@ -116,26 +131,30 @@ class NumbersGoUp:
             self.knights_to_render.append(self.knight_factory.create(self.scores.knight_level))
 
         for weapon in self.weapons_to_render:
-            if not self.game_menu.is_game_menu_showing:
+            if not self.pause_menu.is_game_menu_showing:
                 weapon.update_asset_position_in_bounds()
             self.screen.blit(weapon.sprite, weapon.position)
 
         for knight in self.knights_to_render:
-            if not self.game_menu.is_game_menu_showing:
+            if not self.pause_menu.is_game_menu_showing:
                 knight.animate()
                 if knight.level != self.scores.knight_level:
                     knight.update_level(self.scores.knight_level)
             self.screen.blit(knight.sprite, knight.position)
 
-        if not self.game_menu.is_game_menu_showing:
+        if not self.pause_menu.is_game_menu_showing:
             CollisionDetection(self.scores, self.sound_engine, self.weapons_to_render, self.knights_to_render, self.loot_sack)
         self.screen.blit(self.loot_sack.sprite, self.loot_sack.position)
-        if self.game_menu.is_game_menu_showing:
-            self.game_menu.render_menu()
+        if self.pause_menu.is_game_menu_showing:
+            self.pause_menu.render_menu()
 
         self.screen.blit(self.weapon_menu_button.sprite, (5, 1025))
+        self.screen.blit(self.knight_menu_button.sprite, (65, 1025))
         self.weapon_menu_button.check_for_click()
         if self.is_weapon_menu_showing:
             self.weapon_menu.render_menu()
+        self.knight_menu_button.check_for_click()
+        if self.is_knight_menu_showing:
+            self.knight_menu.render_menu()
 
         pygame.display.update()

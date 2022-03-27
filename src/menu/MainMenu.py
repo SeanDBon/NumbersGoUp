@@ -1,4 +1,8 @@
 from .Menu import *
+from .OptionsMenu import OptionsMenu
+from .StartScreen import StartScreen
+from .VolumeMenu import VolumeMenu
+from .CreditsMenu import CreditsMenu
 from ..game import main
 import sys
 import pygame as pg
