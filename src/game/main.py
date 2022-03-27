@@ -106,7 +106,7 @@ class NumbersGoUp:
         if len(self.weapons_to_render) <= (self.scores.num_weapons / 2):
             weapon_dif = self.scores.num_weapons - len(self.weapons_to_render)
             for i in range(weapon_dif):
-                self.weapons_to_render.append(self.weapon_factory.create(self.scores.level, randint(0, 5)))
+                self.weapons_to_render.append(self.weapon_factory.create(self.scores.weapon_level, randint(0, 5)))
 
         # Update number of knights on screen
         knight_dif = self.scores.num_knights - len(self.knights_to_render)

@@ -3,17 +3,23 @@ import pygame
 
 class Scores:
 	def __init__(self, load_save=None):
+
+		# Overarching Factors
 		self.level = 0
 		self.total_points = 0
 		self.claimed_weapons = {}
+
+		# Knight Factors
 		self.knight_level = 0
 		self.num_knights = 0
 		self.knight_level_upgrade_cost = 1000
 		self.knight_num_upgrade_cost = 1000
-		self.weapon_level_upgrade_cost = 1000
-		self.weapon_num_upgrade_cost = 1000
+
+		# Weapon Factors
 		self.weapon_level = 0
 		self.num_weapons = 100
+		self.weapon_level_upgrade_cost = 1000
+		self.weapon_num_upgrade_cost = 1000
 
 		# Game balance modifiers
 		self.next_level = 1000

@@ -49,7 +49,7 @@ class WeaponMenu(GameMenu):
         self.weapon_num_button.check_for_click()
 
     def weapon_upgrade_level_callback(self):
-        if self.scores.weapon_level < 12:
+        if self.scores.weapon_level < 11:
             if self.scores.total_points >= self.scores.weapon_level_upgrade_cost:
                 self.scores.total_points -= self.scores.weapon_level_upgrade_cost
                 self.scores.weapon_level_upgrade_cost *= 1.1
@@ -59,4 +59,4 @@ class WeaponMenu(GameMenu):
         if self.scores.total_points >= self.scores.weapon_num_upgrade_cost:
             self.scores.total_points -= self.scores.weapon_num_upgrade_cost
             self.scores.weapon_num_upgrade_cost *= 1.1
-            self.scores.num_weapons += 1000
+            self.scores.num_weapons += 20
