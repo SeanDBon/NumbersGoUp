@@ -7,3 +7,4 @@ class Settings:
     FRIC = -0.12
     FPS = 60
     bg_color = (50, 50, 50)
+    isPlaying = False

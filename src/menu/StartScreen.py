@@ -1,6 +1,7 @@
 from .Menu import Menu
 import sys
 import pygame
+from ..settings import Settings
 
 
 class StartScreen(Menu):
@@ -59,7 +60,7 @@ class StartScreen(Menu):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == 'Start':
-                self.game.playing = True
+                Settings.isPlaying = True
             elif self.state == 'Options':
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':

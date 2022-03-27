@@ -31,9 +31,6 @@ class NumbersGoUp:
         # Setup scores and scoreboard
         self.scores = Scores()
 
-        # This bitch be running
-        self.this_bitch_be_running = True
-
         # weapon icon button
         self.weapon_menu_button = Button('weapon_menu_icon.png', (5, 1025), 0, (24.99, 24.99), 600, 600, 0.0833,
                                          self.weapon_menu_button_callback)
@@ -53,7 +50,7 @@ class NumbersGoUp:
         self.num_weapons = 300
 
         # Show game menu
-        self.pause_menu = PauseMenu(self.screen, self.this_bitch_be_running)
+        self.pause_menu = PauseMenu(self.screen)
 
         # Setup loot sack
         self.loot_sack = LootSackAsset(1)
@@ -94,9 +91,9 @@ class NumbersGoUp:
     def run_game(self):
         """Start the main loop for the game."""
         clock = pygame.time.Clock()
-        self.sound_engine.play_music("background_1");
+        self.sound_engine.play_music("background_1")
 
-        while self.this_bitch_be_running:
+        while Settings.isPlaying:
             clock.tick(self.settings.FPS)
             self._check_events()
             self._update_screen()

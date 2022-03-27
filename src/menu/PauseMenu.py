@@ -1,12 +1,11 @@
 from .GameMenu import *
 import sys
 import pygame
-
+from ..settings import Settings
 
 class PauseMenu(GameMenu):
-    def __init__(self, screen, bitch):
+    def __init__(self, screen):
         super().__init__(screen)
-        self.bitch = bitch
 
         # buttons
         self.main_menu_button = Button('main_menu_button.png', (690, 400), 0, (88.75, 21.25), 355, 85, .5, self.main_menu_callback)
@@ -24,8 +23,9 @@ class PauseMenu(GameMenu):
         self.quit_button.check_for_click()
 
     def main_menu_callback(self):
-        bitch = False
+        Settings.isPlaying = False
 
-    def quit_callback(self):
+    @staticmethod
+    def quit_callback():
         pygame.quit()
         sys.exit()
