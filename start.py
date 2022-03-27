@@ -1,7 +1,6 @@
 import sys
 import pygame as pg
 
-from src.game import main
 from src.menu import MainMenu
 
 

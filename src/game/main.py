@@ -1,5 +1,6 @@
 import sys
 
+import pygame.display
 import pygame.image
 
 from .data.KnightAsset import *
@@ -78,6 +79,7 @@ class NumbersGoUp:
     def run_game(self):
         """Start the main loop for the game."""
         clock = pygame.time.Clock()
+        self.sound_engine.play_music("background_1");
 
         while True:
             clock.tick(self.settings.FPS)

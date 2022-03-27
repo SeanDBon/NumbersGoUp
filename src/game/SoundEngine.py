@@ -18,7 +18,10 @@ class SoundEngine:
 		}
 
 		self.sound_effects = {
-			'pickup': 'resources/sounds/pickup.mp3'
+			'pickup': 'resources/sounds/pickup.mp3',
+			'nick_sound': 'resources/sounds/nick.wav',
+			'jose_sound': 'resources/sounds/joseph.wav',
+			'sean_sound': 'resources/sounds/sean.wav',
 		}
 
 	def play_music(self, music_file, repeat=-1):

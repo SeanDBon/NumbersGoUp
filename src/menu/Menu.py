@@ -1,7 +1,8 @@
 import pygame
 import pygame.mixer
-from pygame import mixer
 import sys
+from src.settings import Settings
+from ..game.SoundEngine import SoundEngine
 
 
 class Menu:
@@ -121,24 +122,71 @@ class OptionsMenu(StartScreen):
                 self.state = 'Volume'
                 self.cursor_rect.midtop = (self.volx + self.offsetx, self.voly + self.offsety)
         elif self.game.START_KEY:
-            pass
-        # To-Do: Create a Volume Menu and a Controls Menu
+            if self.state == 'Volume':
+                self.game.curr_menu = self.game.volume
+                self.run_display = False
+
+
+
+class VolumeMenu(StartScreen):
+    def __init__(self, game):
+        super().__init__(game)
+        self.state = 'Music'
+        self.volx, self.voly = self.mid_w, self.mid_h + 70
+        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 140
+        self.cursor_rect.midtop = (self.volx + self.offsetx, self.voly + self.offsety)
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill((100, 0, 0))
+            self.game.draw_text('Volume Slider', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Music Volume:    " + str(abs(round(Settings.music_volume * 100))), 15,  self.volx, self.voly)
+            self.game.draw_text("Effect Volume:   " + str(abs(round(Settings.sound_effect_volume, 2))), 30,  self.controlsx, self.controlsy)
+            self.draw_cursor()
+            self.blit_screen()
+
+    def draw_cursor(self):
+        self.game.draw_text('*', 15, self.cursor_rect.x - 175, self.cursor_rect.y)
+
+    def check_input(self):
+        if self.game.BACK_KEY:
+            self.game.curr_menu = self.game.options
+            self.run_display = False
+        elif self.game.UP_KEY or self.game.DOWN_KEY:
+            if self.state == 'Effect':
+                self.state = 'Music'
+                self.cursor_rect.midtop = (self.volx + self.offsetx, self.voly + self.offsety)
+            else:
+                self.state = 'Effect'
+                self.cursor_rect.midtop = (self.controlsx + self.offsetx, self.controlsy + self.offsety)
+        elif self.game.RIGHT_KEY:
+            if self.state == 'Music':
+                if round(Settings.music_volume, 2) < .10:
+                    Settings.music_volume += .01
+            else:
+                if round(Settings.sound_effect_volume, 2) < 10:
+                    Settings.sound_effect_volume += 1
+        elif self.game.LEFT_KEY:
+            if self.state == 'Music':
+                if round(Settings.music_volume, 2) > 0.00:
+                    Settings.music_volume -= .01
+            else:
+                if round(Settings.sound_effect_volume, 2) > 0:
+                    Settings.sound_effect_volume -= 1
 
 
 class CreditsMenu(StartScreen):
     def __init__(self, game):
         super().__init__(game)
+        self.sound_engine = SoundEngine()
         self.state = "Nick"
         self.nickx, self.nicky = self.mid_w, self.mid_h + 70
         self.seanx, self.seany = self.mid_w, self.mid_h + 140
         self.josephx, self.josephy = self.mid_w, self.mid_h + 210
         self.cursor_rect.midtop = (self.nickx + self.offsetx, self.nicky + self.offsety)
-        self.nick_sound = mixer.Sound('resources/sounds/nick.wav')
-        self.nick_sound.set_volume(.05)
-        self.sean_sound = mixer.Sound('resources/sounds/sean.wav')
-        self.sean_sound.set_volume(.05)
-        self.joseph_sound = mixer.Sound('resources/sounds/joseph.wav')
-        self.joseph_sound.set_volume(.05)
 
     def display_menu(self):
         self.run_display = True
@@ -156,6 +204,9 @@ class CreditsMenu(StartScreen):
             self.move_cursor()
             self.draw_cursor()
             self.blit_screen()
+
+    def draw_cursor(self):
+        self.game.draw_text('*', 15, self.cursor_rect.x - 50, self.cursor_rect.y)
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
@@ -185,8 +236,8 @@ class CreditsMenu(StartScreen):
             self.run_display = False
         elif self.game.START_KEY:
             if self.state == 'Nick':
-                self.nick_sound.play()
+                self.sound_engine.play_sound_effect('nick_sound')
             elif self.state == 'Sean':
-                self.sean_sound.play()
+                self.sound_engine.play_sound_effect('sean_sound')
             elif self.state == 'Joseph':
-                self.joseph_sound.play()
+                self.sound_engine.play_sound_effect('jose_sound')
