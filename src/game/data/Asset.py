@@ -15,7 +15,7 @@ class Asset:
         """A sprite is a @pygame.surface, usually generated from a sprite sheet via @SpriteSheet."""
         self.sprite = pygame.transform.rotate(sprite, rotation)
 
-        """The rotation of the asset on scree, -360 - 360. Positive is clockwise."""
+        """The rotation of the asset on screen, -360 - 360. Positive is clockwise."""
         self.rotation = rotation
 
         """The center point of the asset on screen."""

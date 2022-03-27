@@ -3,9 +3,23 @@ import pygame
 
 class Scores:
 	def __init__(self, load_save=None):
+
+		# Overarching Factors
 		self.level = 0
 		self.total_points = 0
 		self.claimed_weapons = {}
+
+		# Knight Factors
+		self.knight_level = 0
+		self.num_knights = 0
+		self.knight_level_upgrade_cost = 1000
+		self.knight_num_upgrade_cost = 1000
+
+		# Weapon Factors
+		self.weapon_level = 0
+		self.num_weapons = 100
+		self.weapon_level_upgrade_cost = 1000
+		self.weapon_num_upgrade_cost = 1000
 
 		# Game balance modifiers
 		self.next_level = 1000
@@ -47,10 +61,10 @@ class Scores:
 				self.level += 1
 			self.next_level = self.next_level * 10
 
-	def render_scoreboard(self,screen):
+	def render_scoreboard(self, screen):
 		self.level_up()
 		# Draw score boards
-		point_text = self.font.render("Points: " + str(self.total_points), False, (255, 255, 255))
+		point_text = self.font.render("Points: " + str(int(self.total_points)), False, (255, 255, 255))
 		level_text = self.font.render("Level: " + str(self.level + 1), False, (255, 255, 255))
 		screen.blit(point_text, (0, 0))
 		screen.blit(level_text, (720, 0))

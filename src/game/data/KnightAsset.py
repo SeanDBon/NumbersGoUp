@@ -12,10 +12,14 @@ class KnightAsset(AnimatedAsset):
 		self.direction = direction
 		self.level = level
 		self.name = name
-		self.step_increment = 3
+		self.tracking = False
+		self.step_increment = 0
 		self.distance_traveled = 0
-		self.min_travel_distance = 50
+		self.min_travel_distance = 200
 		self.settings = Settings()
+		self.create_step_increment()
+		self.animation_time = .6
+		self.last_frame = 0
 
 	def animate(self):
 		self.sprite = self.animation_frames[self.level][self.direction][self.current_frame]
@@ -23,6 +27,28 @@ class KnightAsset(AnimatedAsset):
 		self.update_asset_position()
 		self.update_position()
 		self.update_direction()
+		if self.tracking:
+			self.track_position()
+		else:
+			self.random_direction()
+
+	def update_level(self, level):
+		self.level = level
+		self.create_step_increment()
+		self.create_animation_dt()
+
+	def create_step_increment(self):
+		self.step_increment = (self.level + 1) * 1.2
+
+	def create_animation_dt(self):
+		if self.level == 3:
+			self.animation_time = .4
+		elif self.level == 6:
+			self.animation_time = .2
+		elif self.level == 9:
+			self.animation_time = .1
+		elif self.level == 12:
+			self.animation_time = .05
 
 	def update_position(self):
 		x = self.position[0]
@@ -40,7 +66,23 @@ class KnightAsset(AnimatedAsset):
 		elif self.direction == 3:
 			y -= self.step_increment
 		self.position = (x, y)
+		self.distance_traveled += self.step_increment
 
+	def update_animation_frame(self):
+		self.current_time += self.animation_dt
+		if self.current_time >= self.animation_time:
+			self.current_time = 0
+			if self.last_frame == 2:
+				self.current_frame = 0
+				self.last_frame = 1
+			else:
+				self.last_frame = self.current_frame
+				self.current_frame += 1
+				if self.current_frame == self.animation_frames_len:
+					self.last_frame = 2
+					self.current_frame = 1
+
+	# This function keeps the knights on the game screen
 	def update_direction(self):
 		x = self.position[0]
 		y = self.position[1]
@@ -57,6 +99,36 @@ class KnightAsset(AnimatedAsset):
 		elif y - self.step_increment <= 20:
 			self.distance_traveled = 0
 			self.direction = 0
+
+	def track_position(self):
+		x = self.position[0]
+		y = self.position[1]
+		track_location = pygame.mouse.get_pos()
+		x_dif = abs(x - track_location[0])
+		y_dif = abs(y - track_location[1])
+		modifier = 10
+
+		if x_dif > y_dif:
+			if x_dif > modifier:
+				if x > track_location[0] > track_location[0] - modifier:
+					self.direction = 2
+				elif x < track_location[0] < track_location[0] + modifier:
+					self.direction = 1
+
+		else:
+			if y_dif > modifier:
+				if y > track_location[1] > track_location[1] - modifier:
+					self.direction = 3
+				elif y < track_location[1] < track_location[1] + modifier:
+					self.direction = 0
+
+	def random_direction(self):
+		# Weighted random direction change
+		if self.distance_traveled >= self.min_travel_distance:
+			rand = randint(0, 100) + self.distance_traveled
+			if rand > self.step_increment * 49:
+				self.distance_traveled = 0
+				self.direction = randint(0, 3)
 
 
 class KnightAssetFactory:
@@ -96,7 +168,7 @@ class KnightAssetFactory:
 					image_frame = frame+int(round((i - 1) / 3) * 3)
 					animation_frames[direction].append(self.sprite_sheet.get_image(frame=image_frame,
 																					level=direction,
-																					width=75.8,
+																					width=75.9,
 																					height=103.5,
 																					scale=1))
 			self.animation_frames.append(animation_frames)
