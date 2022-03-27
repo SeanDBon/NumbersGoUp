@@ -31,14 +31,14 @@ class WeaponMenu(GameMenu):
         self.weapon_level_upgrade_cost_text = self.font.render(str(int(self.scores.weapon_level_upgrade_cost)), False, (0, 0, 0))
         self.screen.blit(self.weapon_level_upgrade_cost_text, (925, 412))
         self.screen.blit(self.weapon_level_label_text, (1030, 412))
-        self.screen.blit(self.weapon_level_text, (1142, 413))
+        self.screen.blit(self.weapon_level_text, (1147, 413))
 
         # num text rendering
         self.weapon_num_text = self.font.render(str(self.scores.num_weapons), False, (0, 0, 0))
         self.weapon_num_upgrade_cost_text = self.font.render(str(int(self.scores.weapon_num_upgrade_cost)), False, (0, 0, 0))
         self.screen.blit(self.weapon_num_upgrade_cost_text, (925, 512))
         self.screen.blit(self.weapon_num_label_text, (1030, 512))
-        self.screen.blit(self.weapon_num_text, (1210, 513))
+        self.screen.blit(self.weapon_num_text, (1213, 513))
 
         # button rendering
         self.screen.blit(self.weapon_level_button.sprite, (690, 400))
