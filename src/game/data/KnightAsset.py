@@ -12,6 +12,7 @@ class KnightAsset(AnimatedAsset):
 		self.direction = direction
 		self.level = level
 		self.name = name
+		self.tracking = False
 		self.step_increment = 0
 		self.distance_traveled = 0
 		self.min_travel_distance = 200
@@ -26,6 +27,10 @@ class KnightAsset(AnimatedAsset):
 		self.update_asset_position()
 		self.update_position()
 		self.update_direction()
+		if self.tracking:
+			self.track_position()
+		else:
+			self.random_direction()
 
 	def update_level(self, level):
 		self.level = level
@@ -77,6 +82,7 @@ class KnightAsset(AnimatedAsset):
 					self.last_frame = 2
 					self.current_frame = 1
 
+	# This function keeps the knights on the game screen
 	def update_direction(self):
 		x = self.position[0]
 		y = self.position[1]
@@ -94,6 +100,29 @@ class KnightAsset(AnimatedAsset):
 			self.distance_traveled = 0
 			self.direction = 0
 
+	def track_position(self):
+		x = self.position[0]
+		y = self.position[1]
+		track_location = pygame.mouse.get_pos()
+		x_dif = abs(x - track_location[0])
+		y_dif = abs(y - track_location[1])
+		modifier = 10
+
+		if x_dif > y_dif:
+			if x_dif > modifier:
+				if x > track_location[0] > track_location[0] - modifier:
+					self.direction = 2
+				elif x < track_location[0] < track_location[0] + modifier:
+					self.direction = 1
+
+		else:
+			if y_dif > modifier:
+				if y > track_location[1] > track_location[1] - modifier:
+					self.direction = 3
+				elif y < track_location[1] < track_location[1] + modifier:
+					self.direction = 0
+
+	def random_direction(self):
 		# Weighted random direction change
 		if self.distance_traveled >= self.min_travel_distance:
 			rand = randint(0, 100) + self.distance_traveled
