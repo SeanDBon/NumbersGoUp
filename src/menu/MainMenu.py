@@ -3,6 +3,7 @@ from .OptionsMenu import OptionsMenu
 from .StartScreen import StartScreen
 from .VolumeMenu import VolumeMenu
 from .CreditsMenu import CreditsMenu
+from .ControlMenu import ControlMenu
 from ..game import main
 from src.settings import Settings
 
@@ -21,6 +22,7 @@ class MainMenu:
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
         self.volume = VolumeMenu(self)
+        self.controls = ControlMenu(self)
         self.curr_menu = self.main_menu
 
     def game_loop(self):

@@ -36,3 +36,7 @@ class OptionsMenu(StartScreen):
             if self.state == 'Volume':
                 self.game.curr_menu = self.game.volume
                 self.run_display = False
+            elif self.game.START_KEY:
+                if self.state == 'Controls':
+                    self.game.curr_menu = self.game.controls
+                    self.run_display = False

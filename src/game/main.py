@@ -12,6 +12,7 @@ from .Scoreboard import Scores
 from ..menu.KnightMenu import *
 from ..menu.WeaponMenu import *
 from ..menu.PauseMenu import *
+from ..menu.ControlMenu import *
 
 
 class NumbersGoUp:
